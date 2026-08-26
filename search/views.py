@@ -1,9 +1,46 @@
 from itertools import chain
 from django.views.generic import ListView
+from django.http import JsonResponse
+from rest_framework.views import APIView
+from rest_framework.permissions import IsAuthenticated
 from core.models import NewsAndEvents
 from course.models import Program, Course
 from quiz.models import Quiz
 
+
+class SearchAPIView(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def get(self, request, *args, **kwargs):
+        query = request.GET.get("q", "")
+        
+        if not query:
+            return JsonResponse({"courses": [], "quizzes": [], "news": []})
+
+        news_events_results = NewsAndEvents.objects.search(query)
+        course_results = Course.objects.search(query)
+        quiz_results = Quiz.objects.search(query)
+
+        # Serialize
+        courses_data = [
+            {"id": c.id, "title": c.title, "slug": c.slug, "code": c.code, "summary": c.summary}
+            for c in course_results
+        ]
+        quizzes_data = [
+            {"id": q.id, "title": q.title, "slug": q.slug, "description": q.description}
+            for q in quiz_results
+        ]
+        news_data = [
+            {"id": n.id, "title": n.title, "summary": n.summary, "type": n.posted_as}
+            for n in news_events_results
+        ]
+
+        return JsonResponse({
+            "query": query,
+            "courses": courses_data,
+            "quizzes": quizzes_data,
+            "news": news_data
+        })
 
 class SearchView(ListView):
     template_name = "search/search_view.html"

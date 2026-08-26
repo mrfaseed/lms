@@ -153,134 +153,30 @@ class TakenCourse(models.Model):
         return comment
 
     def get_point(self, grade):
-        p = 0
-        # point = 0
-        # for i in student:
-        credit = self.course.credit
-        if self.grade == A_PLUS:
-            point = 4
-        elif self.grade == A:
-            point = 4
+        # Without credits, we simply return a flat point value for the grade.
+        if self.grade == A_PLUS or self.grade == A:
+            return 4.0
         elif self.grade == A_MINUS:
-            point = 3.75
+            return 3.75
         elif self.grade == B_PLUS:
-            point = 3.5
+            return 3.5
         elif self.grade == B:
-            point = 3
+            return 3.0
         elif self.grade == B_MINUS:
-            point = 2.75
+            return 2.75
         elif self.grade == C_PLUS:
-            point = 2.5
+            return 2.5
         elif self.grade == C:
-            point = 2
+            return 2.0
         elif self.grade == C_MINUS:
-            point = 1.75
+            return 1.75
         elif self.grade == D:
-            point = 1
-        else:
-            point = 0
-        p += int(credit) * point
-        return p
-
-    def calculate_gpa(self, total_credit_in_semester):
-        current_semester = Semester.objects.get(is_current_semester=True)
-        student = TakenCourse.objects.filter(
-            student=self.student,
-            course__level=self.student.level,
-            course__semester=current_semester,
-        )
-        p = 0
-        point = 0
-        for i in student:
-            credit = i.course.credit
-            if i.grade == A_PLUS:
-                point = 4
-            elif i.grade == A:
-                point = 4
-            elif i.grade == A_MINUS:
-                point = 3.75
-            elif i.grade == B_PLUS:
-                point = 3.5
-            elif i.grade == B:
-                point = 3
-            elif i.grade == B_MINUS:
-                point = 2.75
-            elif i.grade == C_PLUS:
-                point = 2.5
-            elif i.grade == C:
-                point = 2
-            elif i.grade == C_MINUS:
-                point = 1.75
-            elif i.grade == D:
-                point = 1
-            else:
-                point = 0
-            p += int(credit) * point
-        try:
-            gpa = p / total_credit_in_semester
-            return round(gpa, 2)
-        except ZeroDivisionError:
-            return 0
-
-    def calculate_cgpa(self):
-        current_semester = Semester.objects.get(is_current_semester=True)
-        previousResult = Result.objects.filter(
-            student__id=self.student.id, level__lt=self.student.level
-        )
-        previous_cgpa = 0
-        for i in previousResult:
-            if i.cgpa is not None:
-                previous_cgpa += i.cgpa
-        cgpa = 0
-        if str(current_semester) == SECOND:
-            first_sem_gpa = 0.0
-            sec_sem_gpa = 0.0
-            try:
-                first_sem_result = Result.objects.get(
-                    student=self.student.id, semester=FIRST, level=self.student.level
-                )
-                first_sem_gpa += first_sem_result.gpa
-            except:
-                first_sem_gpa = 0
-
-            try:
-                sec_sem_result = Result.objects.get(
-                    student=self.student.id, semester=SECOND, level=self.student.level
-                )
-                sec_sem_gpa += sec_sem_result.gpa
-            except:
-                sec_sem_gpa = 0
-
-            taken_courses = TakenCourse.objects.filter(
-                student=self.student, student__level=self.student.level
-            )
-            taken_course_credits = 0
-            taken_course_points = 0
-            for i in taken_courses:
-                taken_course_points += float(i.point)
-            for i in taken_courses:
-                taken_course_credits += int(i.course.credit)
-            # cgpa = (first_sem_gpa + sec_sem_gpa) / 2
-
-            print("taken_course_points = ", taken_course_points)
-            print("taken_course_credits = ", taken_course_credits)
-            print("first_sem_gpa = ", first_sem_gpa)
-            print("sec_sem_gpa = ", sec_sem_gpa)
-            print("cgpa = ", round(taken_course_points / taken_course_credits, 2))
-
-            try:
-                cgpa = taken_course_points / taken_course_credits
-                return round(cgpa, 2)
-            except ZeroDivisionError:
-                return 0
-
-            # return round(cgpa, 2)
+            return 1.0
+        return 0.0
 
 
 class Result(models.Model):
     student = models.ForeignKey(Student, on_delete=models.CASCADE)
-    gpa = models.FloatField(null=True)
-    cgpa = models.FloatField(null=True)
     semester = models.CharField(max_length=100, choices=SEMESTER)
     session = models.CharField(max_length=100, blank=True, null=True)
     level = models.CharField(max_length=25, choices=LEVEL, null=True)

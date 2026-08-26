@@ -27,6 +27,10 @@ urlpatterns += [
     path("quiz/", include("quiz.urls")),
     path("payments/", include("payments.urls")),
     path("accounts/api/", include("accounts.api.urls", namespace="accounts-api")),
+    path("api/programs/", include("course.api.urls")),
+    path("api/core/", include("core.api.urls")),
+    path("api/result/", include("result.api.urls")),
+    path("api/quiz/", include("quiz.api.urls")),
 ]
 
 

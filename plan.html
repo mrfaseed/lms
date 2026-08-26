@@ -1,0 +1,792 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Global VPS Infrastructure & Value Optimizer (Tamil Nadu Focus)</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Chart.js CDN -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        .chart-container {
+            position: relative;
+            width: 100%;
+            max-width: 650px;
+            margin-left: auto;
+            margin-right: auto;
+            height: 320px;
+            max-height: 400px;
+        }
+        @media (min-width: 768px) {
+            .chart-container {
+                height: 360px;
+            }
+        }
+    </style>
+</head>
+<!-- Chosen Palette: Slate & Warm Amber Professional (Light Neutral Background: #f8fafc / #f1f5f9) -->
+<!-- Application Structure Plan:
+     1. Hero Header & Quick Key Metrics: Establishes context, key parameters, and global navigation.
+     2. Provider Directory & Direct Links: Direct URLs with filterable specification cards for instant procurement verification.
+     3. Interactive True Cost & Forex/GST Calculator: Allows users to calculate the real INR liability including 18% OIDAR GST and bank Forex markups.
+     4. Computational Yield Visualizer (Chart.js): Bar charts comparing RAM and storage yield per ₹100 across providers.
+     5. Tamil Nadu Telecom & Network Topology: Interactive latency flow from Rosalpatti/Madurai to BLR, BOM, and European nodes.
+     6. Strategic Scenario Recommender: Task-oriented dynamic views for decision-making (Odoo ERP, Heavy Scraper, Media Archiving, SME).
+     7. Operational & Security Trade-offs: Table comparing DDoS, IPv4 fees, oversell risk, and billing granularity.
+-->
+<!-- Visualization & Content Choices:
+     - Direct Links: Filterable HTML cards with clear CTAs linking to verified pricing pages.
+     - True Cost Calc: Interactive JS input form with instant math output to explain invisible bank forex and GST fees.
+     - Yield Visualizer: Chart.js dynamic Bar charts for numeric comparisons (RAM/₹100, Storage/₹100).
+     - Latency Simulator: CSS/HTML Interactive Timeline with click-to-highlight routing metrics (10ms vs 160ms).
+     - Scenario Selector: Interactive Tab buttons revealing specific architecture recommendations.
+     - Confirming NO SVG used; icons represented using clean Unicode symbols and styled HTML elements.
+-->
+<!-- CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. -->
+<body class="bg-slate-50 text-slate-800 font-sans antialiased min-h-screen flex flex-col">
+
+    <!-- Top Navigation -->
+    <header class="bg-slate-900 text-white sticky top-0 z-50 shadow-md">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
+            <div class="flex items-center space-x-3">
+                <span class="text-amber-400 text-2xl font-bold">⚡ CloudVal</span>
+                <span class="text-xs bg-slate-800 border border-slate-700 text-slate-300 px-2.5 py-1 rounded-full hidden sm:inline-block">Tamil Nadu Infrastructure Index</span>
+            </div>
+            <nav class="hidden md:flex space-x-6 text-sm font-medium">
+                <a href="#directory" class="hover:text-amber-400 transition">Pricing Links</a>
+                <a href="#calculator" class="hover:text-amber-400 transition">GST & Forex Calc</a>
+                <a href="#yield" class="hover:text-amber-400 transition">Yield Charts</a>
+                <a href="#topology" class="hover:text-amber-400 transition">Latency & Routing</a>
+                <a href="#scenarios" class="hover:text-amber-400 transition">Recommendations</a>
+            </nav>
+        </div>
+    </header>
+
+    <!-- Main Container -->
+    <main class="flex-grow max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-12">
+
+        <!-- Executive Banner -->
+        <section class="bg-white rounded-2xl p-6 sm:p-8 shadow-sm border border-slate-200 space-y-4">
+            <div class="flex flex-col md:flex-row md:items-center justify-between gap-4">
+                <div>
+                    <span class="text-xs font-semibold uppercase tracking-wider text-amber-600 bg-amber-50 px-3 py-1 rounded-full border border-amber-200">Infrastructure Decision Framework</span>
+                    <h1 class="text-2xl sm:text-3xl font-extrabold text-slate-900 mt-2">Global VPS Infrastructure & Cost Optimization Analysis</h1>
+                    <p class="text-slate-600 mt-1 max-w-3xl text-sm sm:text-base">
+                        Evaluated for technology deployments operating from <strong class="text-slate-800">Rosalpatti, Virudhunagar District, Tamil Nadu</strong>. Synthesizing hypervisor specifications, submarine optical routing latency, 18% OIDAR GST taxation, and bank forex markups.
+                    </p>
+                </div>
+                <div class="bg-slate-900 text-white p-4 rounded-xl shrink-0 space-y-2 min-w-[220px]">
+                    <div class="text-xs text-slate-400">Baseline Target Specs</div>
+                    <div class="text-lg font-bold text-amber-400">2 vCPU / 4–8 GB RAM</div>
+                    <div class="text-xs text-slate-300 border-t border-slate-800 pt-2 flex justify-between">
+                        <span>Providers Analyzed:</span>
+                        <span class="font-semibold text-white">5 Global Nets</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Key Quick Metrics Cards -->
+            <div class="grid grid-cols-2 md:grid-cols-4 gap-4 pt-4 border-t border-slate-100">
+                <div class="bg-slate-50 p-3.5 rounded-lg border border-slate-200">
+                    <div class="text-xs text-slate-500 font-medium">Lowest Absolute Cost</div>
+                    <div class="text-lg font-bold text-slate-900">~₹525 / mo</div>
+                    <div class="text-xs text-emerald-600 font-medium">Contabo (Cloud VPS 4)</div>
+                </div>
+                <div class="bg-slate-50 p-3.5 rounded-lg border border-slate-200">
+                    <div class="text-xs text-slate-500 font-medium">Lowest Latency (Rosalpatti)</div>
+                    <div class="text-lg font-bold text-slate-900">10 – 25 ms</div>
+                    <div class="text-xs text-emerald-600 font-medium">DigitalOcean / Vultr (BLR)</div>
+                </div>
+                <div class="bg-slate-50 p-3.5 rounded-lg border border-slate-200">
+                    <div class="text-xs text-slate-500 font-medium">Max Storage Yield</div>
+                    <div class="text-lg font-bold text-slate-900">14.28 GB / ₹100</div>
+                    <div class="text-xs text-emerald-600 font-medium">Contabo (NVMe / SSD)</div>
+                </div>
+                <div class="bg-slate-50 p-3.5 rounded-lg border border-slate-200">
+                    <div class="text-xs text-slate-500 font-medium">Max Outbound Bandwidth</div>
+                    <div class="text-lg font-bold text-slate-900">20 TB Egress</div>
+                    <div class="text-xs text-emerald-600 font-medium">Hetzner (€1/TB overage)</div>
+                </div>
+            </div>
+        </section>
+
+        <!-- SECTION 1: Direct Provider Links & Specs Directory -->
+        <section id="directory" class="space-y-6">
+            <div class="border-l-4 border-amber-500 pl-4">
+                <h2 class="text-xl font-bold text-slate-900">1. Direct Official Pricing Directory & Plan Specifications</h2>
+                <p class="text-sm text-slate-600">
+                    Access live official computational pricing pages for independent verification and automated API provisioning. Use filters to highlight local data center presence or resource metrics.
+                </p>
+            </div>
+
+            <!-- Directory Filter Bar -->
+            <div class="flex flex-wrap gap-2 items-center justify-between bg-white p-3 rounded-xl border border-slate-200">
+                <span class="text-xs font-semibold text-slate-500 uppercase tracking-wider px-2">Filter Providers:</span>
+                <div class="flex flex-wrap gap-2 text-xs font-medium">
+                    <button onclick="filterProviders('all')" id="btn-all" class="px-3 py-1.5 rounded-lg bg-slate-900 text-white shadow-sm transition">All Providers</button>
+                    <button onclick="filterProviders('india')" id="btn-india" class="px-3 py-1.5 rounded-lg bg-slate-100 text-slate-700 hover:bg-slate-200 transition">🇮🇳 Indian Data Center</button>
+                    <button onclick="filterProviders('europe')" id="btn-europe" class="px-3 py-1.5 rounded-lg bg-slate-100 text-slate-700 hover:bg-slate-200 transition">🇪🇺 European Data Center</button>
+                    <button onclick="filterProviders('inr')" id="btn-inr" class="px-3 py-1.5 rounded-lg bg-slate-100 text-slate-700 hover:bg-slate-200 transition">💳 Native INR Billing</button>
+                </div>
+            </div>
+
+            <!-- Provider Grid -->
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6" id="provider-grid">
+
+                <!-- Hetzner Card -->
+                <div class="provider-card bg-white rounded-xl border border-slate-200 p-5 shadow-sm hover:shadow-md transition flex flex-col justify-between" data-region="europe" data-inr="false">
+                    <div class="space-y-3">
+                        <div class="flex justify-between items-start">
+                            <div>
+                                <span class="text-xs font-bold text-emerald-600 bg-emerald-50 px-2 py-0.5 rounded border border-emerald-200">High Compute Efficiency</span>
+                                <h3 class="text-lg font-bold text-slate-900 mt-1">Hetzner Online GmbH</h3>
+                            </div>
+                            <span class="text-xs font-mono bg-slate-100 text-slate-600 px-2 py-1 rounded">Germany / Finland</span>
+                        </div>
+                        <p class="text-xs text-slate-600">Industry-leading hardware cost-efficiency with unthrottled NVMe disk read/write throughput.</p>
+                        
+                        <div class="bg-slate-50 p-3 rounded-lg border border-slate-100 space-y-1.5 text-xs">
+                            <div class="flex justify-between"><span class="text-slate-500">Target Instance:</span> <span class="font-semibold text-slate-800">CX23 (Cost-Optimized)</span></div>
+                            <div class="flex justify-between"><span class="text-slate-500">Hardware Spec:</span> <span class="font-semibold text-slate-800">2 vCPU / 4 GB RAM / 40 GB NVMe</span></div>
+                            <div class="flex justify-between"><span class="text-slate-500">Base Price:</span> <span class="font-semibold text-slate-800">€5.49 / mo (+€0.50 for IPv4)</span></div>
+                            <div class="flex justify-between"><span class="text-slate-500">Bandwidth Included:</span> <span class="font-semibold text-emerald-700 font-bold">20 Terabytes</span></div>
+                        </div>
+                    </div>
+
+                    <div class="pt-4 mt-4 border-t border-slate-100 flex items-center justify-between">
+                        <div>
+                            <span class="text-xs text-slate-400 block">Est. Effective Monthly</span>
+                            <span class="text-base font-extrabold text-slate-900">~₹699 / mo</span>
+                        </div>
+                        <a href="https://www.hetzner.com/cloud/cost-optimized/" target="_blank" rel="noopener noreferrer" class="bg-slate-900 hover:bg-slate-800 text-white text-xs font-medium px-3.5 py-2 rounded-lg transition inline-flex items-center space-x-1">
+                            <span>Official Pricing</span>
+                            <span>↗</span>
+                        </a>
+                    </div>
+                </div>
+
+                <!-- DigitalOcean Card -->
+                <div class="provider-card bg-white rounded-xl border border-slate-200 p-5 shadow-sm hover:shadow-md transition flex flex-col justify-between" data-region="india" data-inr="false">
+                    <div class="space-y-3">
+                        <div class="flex justify-between items-start">
+                            <div>
+                                <span class="text-xs font-bold text-blue-600 bg-blue-50 px-2 py-0.5 rounded border border-blue-200">Developer Choice</span>
+                                <h3 class="text-lg font-bold text-slate-900 mt-1">DigitalOcean</h3>
+                            </div>
+                            <span class="text-xs font-mono bg-slate-100 text-slate-600 px-2 py-1 rounded">Bengaluru (BLR1)</span>
+                        </div>
+                        <p class="text-xs text-slate-600">Ultra-low latency to Southern India, stable ecosystem, managed DB options, per-second billing.</p>
+                        
+                        <div class="bg-slate-50 p-3 rounded-lg border border-slate-100 space-y-1.5 text-xs">
+                            <div class="flex justify-between"><span class="text-slate-500">Target Instance:</span> <span class="font-semibold text-slate-800">Basic Droplet</span></div>
+                            <div class="flex justify-between"><span class="text-slate-500">Hardware Spec:</span> <span class="font-semibold text-slate-800">2 vCPU / 4 GB RAM / 80 GB SSD</span></div>
+                            <div class="flex justify-between"><span class="text-slate-500">Base Price:</span> <span class="font-semibold text-slate-800">$24.00 / mo</span></div>
+                            <div class="flex justify-between"><span class="text-slate-500">Bandwidth Included:</span> <span class="font-semibold text-slate-800">4 Terabytes (4,000 GiB)</span></div>
+                        </div>
+                    </div>
+
+                    <div class="pt-4 mt-4 border-t border-slate-100 flex items-center justify-between">
+                        <div>
+                            <span class="text-xs text-slate-400 block">Est. Effective Monthly</span>
+                            <span class="text-base font-extrabold text-slate-900">~₹2,540 / mo</span>
+                        </div>
+                        <a href="https://www.digitalocean.com/pricing/droplets" target="_blank" rel="noopener noreferrer" class="bg-slate-900 hover:bg-slate-800 text-white text-xs font-medium px-3.5 py-2 rounded-lg transition inline-flex items-center space-x-1">
+                            <span>Official Pricing</span>
+                            <span>↗</span>
+                        </a>
+                    </div>
+                </div>
+
+                <!-- Vultr Card -->
+                <div class="provider-card bg-white rounded-xl border border-slate-200 p-5 shadow-sm hover:shadow-md transition flex flex-col justify-between" data-region="india" data-inr="false">
+                    <div class="space-y-3">
+                        <div class="flex justify-between items-start">
+                            <div>
+                                <span class="text-xs font-bold text-indigo-600 bg-indigo-50 px-2 py-0.5 rounded border border-indigo-200">Global Edge Network</span>
+                                <h3 class="text-lg font-bold text-slate-900 mt-1">Vultr</h3>
+                            </div>
+                            <span class="text-xs font-mono bg-slate-100 text-slate-600 px-2 py-1 rounded">Bengaluru / Mumbai</span>
+                        </div>
+                        <p class="text-xs text-slate-600">Multi-city Indian data centers. $0.01/GB global bandwidth overage cap protects against cost spikes.</p>
+                        
+                        <div class="bg-slate-50 p-3 rounded-lg border border-slate-100 space-y-1.5 text-xs">
+                            <div class="flex justify-between"><span class="text-slate-500">Target Instance:</span> <span class="font-semibold text-slate-800">Cloud Compute (Regular)</span></div>
+                            <div class="flex justify-between"><span class="text-slate-500">Hardware Spec:</span> <span class="font-semibold text-slate-800">2 vCPU / 4 GB RAM / 80 GB SSD</span></div>
+                            <div class="flex justify-between"><span class="text-slate-500">Base Price:</span> <span class="font-semibold text-slate-800">$20.00 / mo ($24 for High Perf NVMe)</span></div>
+                            <div class="flex justify-between"><span class="text-slate-500">Bandwidth Included:</span> <span class="font-semibold text-slate-800">3 Terabytes</span></div>
+                        </div>
+                    </div>
+
+                    <div class="pt-4 mt-4 border-t border-slate-100 flex items-center justify-between">
+                        <div>
+                            <span class="text-xs text-slate-400 block">Est. Effective Monthly</span>
+                            <span class="text-base font-extrabold text-slate-900">~₹2,116 / mo</span>
+                        </div>
+                        <a href="https://www.vultr.com/pricing/" target="_blank" rel="noopener noreferrer" class="bg-slate-900 hover:bg-slate-800 text-white text-xs font-medium px-3.5 py-2 rounded-lg transition inline-flex items-center space-x-1">
+                            <span>Official Pricing</span>
+                            <span>↗</span>
+                        </a>
+                    </div>
+                </div>
+
+                <!-- Hostinger Card -->
+                <div class="provider-card bg-white rounded-xl border border-slate-200 p-5 shadow-sm hover:shadow-md transition flex flex-col justify-between" data-region="india" data-inr="true">
+                    <div class="space-y-3">
+                        <div class="flex justify-between items-start">
+                            <div>
+                                <span class="text-xs font-bold text-amber-700 bg-amber-50 px-2 py-0.5 rounded border border-amber-200">Native INR / UPI Gateway</span>
+                                <h3 class="text-lg font-bold text-slate-900 mt-1">Hostinger India</h3>
+                            </div>
+                            <span class="text-xs font-mono bg-slate-100 text-slate-600 px-2 py-1 rounded">Mumbai Data Center</span>
+                        </div>
+                        <p class="text-xs text-slate-600">Zero foreign exchange markups via local UPI/RuPay. Requires multi-year prepaid commitment.</p>
+                        
+                        <div class="bg-slate-50 p-3 rounded-lg border border-slate-100 space-y-1.5 text-xs">
+                            <div class="flex justify-between"><span class="text-slate-500">Target Instance:</span> <span class="font-semibold text-slate-800">KVM 2 Plan</span></div>
+                            <div class="flex justify-between"><span class="text-slate-500">Hardware Spec:</span> <span class="font-semibold text-slate-800">2 vCPU / 8 GB RAM / 100 GB NVMe</span></div>
+                            <div class="flex justify-between"><span class="text-slate-500">Promo Rate:</span> <span class="font-semibold text-slate-800">₹799 / mo (Prepaid 24/48 mo)</span></div>
+                            <div class="flex justify-between"><span class="text-slate-500">Renewal Shock:</span> <span class="font-semibold text-rose-600">Renews at ₹1,199 / mo</span></div>
+                        </div>
+                    </div>
+
+                    <div class="pt-4 mt-4 border-t border-slate-100 flex items-center justify-between">
+                        <div>
+                            <span class="text-xs text-slate-400 block">Est. Effective Monthly</span>
+                            <span class="text-base font-extrabold text-slate-900">~₹943 / mo (Post GST)</span>
+                        </div>
+                        <a href="https://www.hostinger.com/in/vps-hosting" target="_blank" rel="noopener noreferrer" class="bg-slate-900 hover:bg-slate-800 text-white text-xs font-medium px-3.5 py-2 rounded-lg transition inline-flex items-center space-x-1">
+                            <span>Official Pricing</span>
+                            <span>↗</span>
+                        </a>
+                    </div>
+                </div>
+
+                <!-- Contabo Card -->
+                <div class="provider-card bg-white rounded-xl border border-slate-200 p-5 shadow-sm hover:shadow-md transition flex flex-col justify-between" data-region="europe" data-inr="false">
+                    <div class="space-y-3">
+                        <div class="flex justify-between items-start">
+                            <div>
+                                <span class="text-xs font-bold text-purple-600 bg-purple-50 px-2 py-0.5 rounded border border-purple-200">Max RAM / Density</span>
+                                <h3 class="text-lg font-bold text-slate-900 mt-1">Contabo</h3>
+                            </div>
+                            <span class="text-xs font-mono bg-slate-100 text-slate-600 px-2 py-1 rounded">Germany Base / Mumbai</span>
+                        </div>
+                        <p class="text-xs text-slate-600">Unmatched resource allocation for unmanaged workloads. Note: Mumbai node adds ~$4/mo regional fee.</p>
+                        
+                        <div class="bg-slate-50 p-3 rounded-lg border border-slate-100 space-y-1.5 text-xs">
+                            <div class="flex justify-between"><span class="text-slate-500">Target Instance:</span> <span class="font-semibold text-slate-800">Cloud VPS 4 (or VPS 10 promo)</span></div>
+                            <div class="flex justify-between"><span class="text-slate-500">Hardware Spec:</span> <span class="font-semibold text-slate-800">4 vCPU / 8 GB RAM / 100 GB SSD</span></div>
+                            <div class="flex justify-between"><span class="text-slate-500">Base Price:</span> <span class="font-semibold text-slate-800">€4.50 / mo (EU Base)</span></div>
+                            <div class="flex justify-between"><span class="text-slate-500">Bandwidth Included:</span> <span class="font-semibold text-slate-800">32 Terabytes (Fair Usage)</span></div>
+                        </div>
+                    </div>
+
+                    <div class="pt-4 mt-4 border-t border-slate-100 flex items-center justify-between">
+                        <div>
+                            <span class="text-xs text-slate-400 block">Est. Effective Monthly</span>
+                            <span class="text-base font-extrabold text-slate-900">~₹525 / mo (EU node)</span>
+                        </div>
+                        <a href="https://contabo.com/en/pricing/" target="_blank" rel="noopener noreferrer" class="bg-slate-900 hover:bg-slate-800 text-white text-xs font-medium px-3.5 py-2 rounded-lg transition inline-flex items-center space-x-1">
+                            <span>Official Pricing</span>
+                            <span>↗</span>
+                        </a>
+                    </div>
+                </div>
+
+            </div>
+        </section>
+
+        <!-- SECTION 2: Interactive Real Cost & Tax Calculator -->
+        <section id="calculator" class="bg-white rounded-2xl p-6 sm:p-8 shadow-sm border border-slate-200 space-y-6">
+            <div class="border-l-4 border-amber-500 pl-4">
+                <h2 class="text-xl font-bold text-slate-900">2. True Outlay Calculator (18% OIDAR GST & Forex Markups)</h2>
+                <p class="text-sm text-slate-600">
+                    Advertised USD/EUR prices do not reflect the final bank transaction in India. Calculate the total outflow incorporating foreign exchange markups and Indian tax laws.
+                </p>
+            </div>
+
+            <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
+                
+                <!-- Controls Form -->
+                <div class="lg:col-span-6 space-y-4 bg-slate-50 p-5 rounded-xl border border-slate-200">
+                    <div>
+                        <label class="block text-xs font-semibold text-slate-700 uppercase tracking-wider mb-2">Preset Plan Selector</label>
+                        <select id="calc-preset" onchange="loadPreset()" class="w-full bg-white border border-slate-300 rounded-lg text-sm px-3 py-2 text-slate-800 focus:ring-2 focus:ring-amber-500 outline-none">
+                            <option value="custom">-- Custom Input --</option>
+                            <option value="hetzner" selected>Hetzner CX23 (€5.99 incl. IPv4)</option>
+                            <option value="do">DigitalOcean Basic ($24.00)</option>
+                            <option value="vultr">Vultr Cloud Compute Regular ($20.00)</option>
+                            <option value="hostinger">Hostinger KVM 2 Promo (₹799.00 Domestic)</option>
+                            <option value="contabo">Contabo Cloud VPS 4 (€4.50 EU Base)</option>
+                        </select>
+                    </div>
+
+                    <div class="grid grid-cols-2 gap-4">
+                        <div>
+                            <label class="block text-xs font-medium text-slate-600 mb-1">Currency</label>
+                            <select id="calc-currency" onchange="calculateTrueCost()" class="w-full bg-white border border-slate-300 rounded-lg text-sm px-3 py-2 text-slate-800 outline-none">
+                                <option value="EUR">EUR (€)</option>
+                                <option value="USD">USD ($)</option>
+                                <option value="INR">INR (₹)</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label class="block text-xs font-medium text-slate-600 mb-1">Advertised Price</label>
+                            <input type="number" step="0.01" id="calc-price" value="5.99" oninput="calculateTrueCost()" class="w-full bg-white border border-slate-300 rounded-lg text-sm px-3 py-2 text-slate-800 outline-none">
+                        </div>
+                    </div>
+
+                    <div class="grid grid-cols-2 gap-4">
+                        <div>
+                            <label class="block text-xs font-medium text-slate-600 mb-1">Bank Forex Markup (%)</label>
+                            <input type="number" step="0.1" id="calc-forex-pct" value="2.5" oninput="calculateTrueCost()" class="w-full bg-white border border-slate-300 rounded-lg text-sm px-3 py-2 text-slate-800 outline-none">
+                            <span class="text-[10px] text-slate-400">Standard card rate: 1.0%–3.5%</span>
+                        </div>
+                        <div>
+                            <label class="block text-xs font-medium text-slate-600 mb-1">OIDAR GST Rate (%)</label>
+                            <input type="number" id="calc-gst-pct" value="18" oninput="calculateTrueCost()" class="w-full bg-white border border-slate-300 rounded-lg text-sm px-3 py-2 text-slate-800 outline-none">
+                            <span class="text-[10px] text-slate-400">Mandatory Indian Tax</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Live Mathematical Output -->
+                <div class="lg:col-span-6 bg-slate-900 text-white p-6 rounded-xl space-y-4">
+                    <div class="text-xs uppercase tracking-wider text-amber-400 font-semibold border-b border-slate-800 pb-2">Itemized Financial Breakdown</div>
+                    
+                    <div class="space-y-2 text-sm">
+                        <div class="flex justify-between text-slate-300">
+                            <span>Base Converted (Mid-Market):</span>
+                            <span id="out-base-inr" class="font-mono">₹569.05</span>
+                        </div>
+                        <div class="flex justify-between text-slate-300">
+                            <span>Bank Forex Fee:</span>
+                            <span id="out-forex-inr" class="font-mono">₹14.23</span>
+                        </div>
+                        <div class="flex justify-between text-slate-300">
+                            <span>Subtotal (Subject to Tax):</span>
+                            <span id="out-subtotal-inr" class="font-mono">₹583.28</span>
+                        </div>
+                        <div class="flex justify-between text-amber-300">
+                            <span>18% OIDAR GST Tax:</span>
+                            <span id="out-gst-inr" class="font-mono">+₹104.99</span>
+                        </div>
+                    </div>
+
+                    <div class="border-t border-slate-800 pt-3 flex items-center justify-between">
+                        <div>
+                            <span class="text-xs text-slate-400 uppercase tracking-wider block">Total Monthly Liability</span>
+                            <span class="text-xs text-slate-400">Billed in Indian Rupee</span>
+                        </div>
+                        <span id="out-total-inr" class="text-2xl sm:text-3xl font-extrabold text-amber-400 font-mono">₹688.27</span>
+                    </div>
+
+                    <div class="text-[11px] text-slate-400 bg-slate-800/80 p-3 rounded-lg border border-slate-700/50">
+                        <strong>Fiscal Note:</strong> When purchasing foreign cloud services without native INR invoice support, your domestic issuing bank applies taxes on the foreign markup. Providers registered under Indian OIDAR (like DigitalOcean/Vultr) remit 18% GST directly on invoices.
+                    </div>
+                </div>
+
+            </div>
+        </section>
+
+        <!-- SECTION 3: Computational Yield Visualizer -->
+        <section id="yield" class="space-y-6">
+            <div class="border-l-4 border-amber-500 pl-4">
+                <h2 class="text-xl font-bold text-slate-900">3. Computational Hardware Yield per ₹100 Spent</h2>
+                <p class="text-sm text-slate-600">
+                    Standardizing hardware return per unit currency (strictly calculated inclusive of 18% GST and forex markups).
+                </p>
+            </div>
+
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                <!-- Chart Container 1: RAM Yield -->
+                <div class="bg-white p-5 rounded-2xl border border-slate-200 shadow-sm space-y-3">
+                    <div class="flex justify-between items-center border-b border-slate-100 pb-2">
+                        <h3 class="text-base font-bold text-slate-900">RAM Yield (GB per ₹100 Spent)</h3>
+                        <span class="text-xs text-slate-500 font-medium">Higher is Better</span>
+                    </div>
+                    <div class="chart-container">
+                        <canvas id="ramYieldChart"></canvas>
+                    </div>
+                    <p class="text-xs text-slate-500 text-center">Contabo leads in memory density, followed closely by Hostinger's multi-year promotional plan.</p>
+                </div>
+
+                <!-- Chart Container 2: Storage Yield -->
+                <div class="bg-white p-5 rounded-2xl border border-slate-200 shadow-sm space-y-3">
+                    <div class="flex justify-between items-center border-b border-slate-100 pb-2">
+                        <h3 class="text-base font-bold text-slate-900">Storage Capacity Yield (GB per ₹100)</h3>
+                        <span class="text-xs text-slate-500 font-medium">Higher is Better</span>
+                    </div>
+                    <div class="chart-container">
+                        <canvas id="storageYieldChart"></canvas>
+                    </div>
+                    <p class="text-xs text-slate-500 text-center">Hetzner and Hostinger deliver high-speed NVMe storage, while DigitalOcean trades capacity for stability.</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- SECTION 4: Telecommunications & Network Topology -->
+        <section id="topology" class="bg-white rounded-2xl p-6 sm:p-8 shadow-sm border border-slate-200 space-y-6">
+            <div class="border-l-4 border-amber-500 pl-4">
+                <h2 class="text-xl font-bold text-slate-900">4. Telecommunications & Network Topology (Rosalpatti to Data Centers)</h2>
+                <p class="text-sm text-slate-600">
+                    Physical routing analysis for internet traffic originating from Rosalpatti, Virudhunagar district, via Madurai terrestrial hubs and Chennai optical landing stations.
+                </p>
+            </div>
+
+            <!-- Routing Simulator Flow -->
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                
+                <!-- Corridor A -->
+                <div class="bg-emerald-50/60 border border-emerald-200 p-5 rounded-xl space-y-3 relative overflow-hidden">
+                    <div class="flex justify-between items-start">
+                        <span class="text-xs font-bold uppercase tracking-wider text-emerald-800 bg-emerald-100 px-2 py-0.5 rounded">Corridor A: Local South</span>
+                        <span class="text-xl font-black text-emerald-700 font-mono">10 – 25 ms</span>
+                    </div>
+                    <h3 class="font-bold text-slate-900">Bengaluru (BLR Data Centers)</h3>
+                    <p class="text-xs text-slate-600">
+                        Traffic routes from Rosalpatti → Madurai Aggregation Hub → Salem/Hosur → Bengaluru (~450 km). 
+                    </p>
+                    <div class="bg-white p-3 rounded-lg border border-emerald-200 text-xs space-y-1">
+                        <div class="flex justify-between"><span>SSH Terminal Feel:</span> <strong class="text-emerald-700">Instant / Zero Delay</strong></div>
+                        <div class="flex justify-between"><span>Interactive SQL/Web:</span> <strong class="text-emerald-700">Ideal for Live UI</strong></div>
+                        <div class="flex justify-between"><span>Providers Present:</span> <span class="font-medium text-slate-800">DigitalOcean, Vultr</span></div>
+                    </div>
+                </div>
+
+                <!-- Corridor B -->
+                <div class="bg-blue-50/60 border border-blue-200 p-5 rounded-xl space-y-3 relative overflow-hidden">
+                    <div class="flex justify-between items-start">
+                        <span class="text-xs font-bold uppercase tracking-wider text-blue-800 bg-blue-100 px-2 py-0.5 rounded">Corridor B: National Node</span>
+                        <span class="text-xl font-black text-blue-700 font-mono">25 – 45 ms</span>
+                    </div>
+                    <h3 class="font-bold text-slate-900">Mumbai (Navi Mumbai)</h3>
+                    <p class="text-xs text-slate-600">
+                        Traffic routes from Rosalpatti → Madurai → Chennai NIXI IX → Peninsular Fiber Corridor → Mumbai (~1,300 km).
+                    </p>
+                    <div class="bg-white p-3 rounded-lg border border-blue-200 text-xs space-y-1">
+                        <div class="flex justify-between"><span>SSH Terminal Feel:</span> <strong class="text-blue-700">Highly Fluid</strong></div>
+                        <div class="flex justify-between"><span>Interactive SQL/Web:</span> <strong class="text-blue-700">Excellent SaaS Grade</strong></div>
+                        <div class="flex justify-between"><span>Providers Present:</span> <span class="font-medium text-slate-800">Hostinger, Vultr, Contabo</span></div>
+                    </div>
+                </div>
+
+                <!-- Corridor C -->
+                <div class="bg-amber-50/60 border border-amber-200 p-5 rounded-xl space-y-3 relative overflow-hidden">
+                    <div class="flex justify-between items-start">
+                        <span class="text-xs font-bold uppercase tracking-wider text-amber-800 bg-amber-100 px-2 py-0.5 rounded">Corridor C: Submarine Cable</span>
+                        <span class="text-xl font-black text-amber-700 font-mono">130 – 170 ms</span>
+                    </div>
+                    <h3 class="font-bold text-slate-900">Europe (Germany / Finland)</h3>
+                    <p class="text-xs text-slate-600">
+                        Traverses Chennai Submarine Cables → Indian Ocean → Red Sea → Mediterranean → Continental Europe.
+                    </p>
+                    <div class="bg-white p-3 rounded-lg border border-amber-200 text-xs space-y-1">
+                        <div class="flex justify-between"><span>SSH Terminal Feel:</span> <strong class="text-amber-700">Noticeable Typographic Delay</strong></div>
+                        <div class="flex justify-between"><span>Interactive SQL/Web:</span> <strong class="text-amber-700">Best for Async/Batch</strong></div>
+                        <div class="flex justify-between"><span>Providers Present:</span> <span class="font-medium text-slate-800">Hetzner, Contabo</span></div>
+                    </div>
+                </div>
+
+            </div>
+        </section>
+
+        <!-- SECTION 5: Strategic Workload Decision Matrix -->
+        <section id="scenarios" class="space-y-6">
+            <div class="border-l-4 border-amber-500 pl-4">
+                <h2 class="text-xl font-bold text-slate-900">5. Strategic Deployment Recommendations by Workload Scenario</h2>
+                <p class="text-sm text-slate-600">
+                    Select your operational requirement to reveal the optimal infrastructure architectural strategy.
+                </p>
+            </div>
+
+            <!-- Interactive Scenario Tabs -->
+            <div class="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden">
+                <div class="flex flex-wrap border-b border-slate-200 bg-slate-50">
+                    <button onclick="showScenario('scen-a')" id="tab-scen-a" class="scenario-tab px-5 py-3.5 text-xs font-bold text-amber-600 border-b-2 border-amber-500 bg-white transition">Scenario A: Local Web Apps / ERP</button>
+                    <button onclick="showScenario('scen-b')" id="tab-scen-b" class="scenario-tab px-5 py-3.5 text-xs font-bold text-slate-600 hover:text-slate-900 transition">Scenario B: Heavy Compute & Batch</button>
+                    <button onclick="showScenario('scen-c')" id="tab-scen-c" class="scenario-tab px-5 py-3.5 text-xs font-bold text-slate-600 hover:text-slate-900 transition">Scenario C: Media / Heavy Storage</button>
+                    <button onclick="showScenario('scen-d')" id="tab-scen-d" class="scenario-tab px-5 py-3.5 text-xs font-bold text-slate-600 hover:text-slate-900 transition">Scenario D: SME Fixed INR Budget</button>
+                </div>
+
+                <div class="p-6">
+                    
+                    <!-- Scenario A Content -->
+                    <div id="scen-a" class="scenario-content space-y-4">
+                        <div class="flex items-center space-x-2">
+                            <span class="text-lg">🎯</span>
+                            <h3 class="text-lg font-bold text-slate-900">High-Performance Local Enterprise Applications (Odoo ERP, SaaS, Synchronous DBs)</h3>
+                        </div>
+                        <p class="text-xs sm:text-sm text-slate-600">
+                            <strong>Priority:</strong> Sub-25ms network response time for end-users in Tamil Nadu. High interactive speed and database fluidness are mandatory.
+                        </p>
+                        <div class="bg-emerald-50 border border-emerald-200 p-4 rounded-xl space-y-2 text-xs">
+                            <div class="font-bold text-emerald-900">Recommended Selection: DigitalOcean (BLR1) or Vultr (Bengaluru)</div>
+                            <p class="text-slate-700">
+                                Deploying in Bengaluru ensures ~15ms latency to Rosalpatti. DigitalOcean provides managed database extensions (PostgreSQL/MySQL) which simplify maintenance. Vultr's High Performance AMD tier delivers superior NVMe speed if raw disk IOPS are needed.
+                            </p>
+                        </div>
+                    </div>
+
+                    <!-- Scenario B Content -->
+                    <div id="scen-b" class="scenario-content space-y-4 hidden">
+                        <div class="flex items-center space-x-2">
+                            <span class="text-lg">⚙️</span>
+                            <h3 class="text-lg font-bold text-slate-900">Heavy Computational Processing & Asynchronous Scraping</h3>
+                        </div>
+                        <p class="text-xs sm:text-sm text-slate-600">
+                            <strong>Priority:</strong> Unthrottled vCPU performance, massive bandwidth allowances, and maximum computing power per Rupee spent. Front-end latency is irrelevant.
+                        </p>
+                        <div class="bg-emerald-50 border border-emerald-200 p-4 rounded-xl space-y-2 text-xs">
+                            <div class="font-bold text-emerald-900">Recommended Selection: Hetzner Online (Germany/Finland)</div>
+                            <p class="text-slate-700">
+                                Hetzner delivers unmatched CPU and NVMe performance for ~₹699/mo (including IPv4). The 20 TB included egress handles massive web scraping or analytical model downloads effortlessly. 140ms latency does not impact backend asynchronous cron jobs.
+                            </p>
+                        </div>
+                    </div>
+
+                    <!-- Scenario C Content -->
+                    <div id="scen-c" class="scenario-content space-y-4 hidden">
+                        <div class="flex items-center space-x-2">
+                            <span class="text-lg">💾</span>
+                            <h3 class="text-lg font-bold text-slate-900">Archival Storage, Media Systems (Nextcloud), & Java-Heavy Apps</h3>
+                        </div>
+                        <p class="text-xs sm:text-sm text-slate-600">
+                            <strong>Priority:</strong> High memory (RAM) and large disk volumes per monetary unit. Low CPU utilization, high static storage capacity.
+                        </p>
+                        <div class="bg-emerald-50 border border-emerald-200 p-4 rounded-xl space-y-2 text-xs">
+                            <div class="font-bold text-emerald-900">Recommended Selection: Contabo (European Node Cloud VPS / Storage VPS)</div>
+                            <p class="text-slate-700">
+                                Contabo provides 8 GB RAM and 100 GB SSD (or 300 GB on Storage VPS) for ~₹525/mo. Keep the instance in European data centers to avoid the ~$4/mo Mumbai regional surcharge while maximizing density. Off-site automated backups are essential.
+                            </p>
+                        </div>
+                    </div>
+
+                    <!-- Scenario D Content -->
+                    <div id="scen-d" class="scenario-content space-y-4 hidden">
+                        <div class="flex items-center space-x-2">
+                            <span class="text-lg">🏢</span>
+                            <h3 class="text-lg font-bold text-slate-900">Long-Term SME Deployment with Fixed Rupee Budgets</h3>
+                        </div>
+                        <p class="text-xs sm:text-sm text-slate-600">
+                            <strong>Priority:</strong> Insulation from USD/EUR currency volatility, zero bank foreign exchange fees, and guaranteed multi-year fixed cost limits.
+                        </p>
+                        <div class="bg-emerald-50 border border-emerald-200 p-4 rounded-xl space-y-2 text-xs">
+                            <div class="font-bold text-emerald-900">Recommended Selection: Hostinger India (Mumbai Data Center)</div>
+                            <p class="text-slate-700">
+                                Locking in a 24 or 48-month KVM 2 plan via native UPI payment secures 2 vCPUs, 8 GB RAM, and local Mumbai deployment for ₹799/mo (+18% GST). Bypasses all forex markups completely. Note: Prepare for server migration before renewal prices escalate.
+                            </p>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </section>
+
+        <!-- SECTION 6: Operational Security & Policy Matrix -->
+        <section class="bg-white rounded-2xl p-6 sm:p-8 shadow-sm border border-slate-200 space-y-4">
+            <div class="border-l-4 border-amber-500 pl-4">
+                <h2 class="text-xl font-bold text-slate-900">6. Operational Policy & Infrastructure Nuances</h2>
+                <p class="text-sm text-slate-600">
+                    Crucial administrative and technical constraints to review before provisioning infrastructure.
+                </p>
+            </div>
+
+            <div class="overflow-x-auto">
+                <table class="w-full text-left border-collapse text-xs">
+                    <thead>
+                        <tr class="bg-slate-100 text-slate-700 font-bold uppercase tracking-wider border-b border-slate-200">
+                            <th class="p-3">Provider</th>
+                            <th class="p-3">Billing Model</th>
+                            <th class="p-3">IPv4 Policy</th>
+                            <th class="p-3">DDoS Protection</th>
+                            <th class="p-3">Oversubscription Risk</th>
+                        </tr>
+                    </thead>
+                    <tbody class="divide-y divide-slate-100 text-slate-700">
+                        <tr class="hover:bg-slate-50">
+                            <td class="p-3 font-bold text-slate-900">Hetzner</td>
+                            <td class="p-3">Strict Hourly / Monthly Cap</td>
+                            <td class="p-3 text-rose-600 font-medium">+€0.50/mo Decoupled</td>
+                            <td class="p-3 text-emerald-600 font-medium">Included Standard</td>
+                            <td class="p-3 text-slate-600">Very Low (Dedicated Host Ratios)</td>
+                        </tr>
+                        <tr class="hover:bg-slate-50">
+                            <td class="p-3 font-bold text-slate-900">DigitalOcean</td>
+                            <td class="p-3 text-emerald-600 font-medium">Granular Per-Second Billing</td>
+                            <td class="p-3 text-slate-600">Included in Base</td>
+                            <td class="p-3 text-emerald-600 font-medium">Infrastructure Scrubbing</td>
+                            <td class="p-3 text-slate-600">Low (Predictable Hypervisor)</td>
+                        </tr>
+                        <tr class="hover:bg-slate-50">
+                            <td class="p-3 font-bold text-slate-900">Vultr</td>
+                            <td class="p-3">Hourly / Monthly Cap</td>
+                            <td class="p-3 text-slate-600">Included in Base</td>
+                            <td class="p-3 text-rose-600 font-medium font-bold">+$10.00/mo Optional Add-on</td>
+                            <td class="p-3 text-slate-600">Low to Moderate</td>
+                        </tr>
+                        <tr class="hover:bg-slate-50">
+                            <td class="p-3 font-bold text-slate-900">Hostinger</td>
+                            <td class="p-3 text-amber-600 font-medium">Long-term Prepay (12–48 mo)</td>
+                            <td class="p-3 text-slate-600">Included in Base</td>
+                            <td class="p-3 text-emerald-600 font-medium">WAF & DDoS Included</td>
+                            <td class="p-3 text-slate-600">Low (100% KVM Virtualization)</td>
+                        </tr>
+                        <tr class="hover:bg-slate-50">
+                            <td class="p-3 font-bold text-slate-900">Contabo</td>
+                            <td class="p-3">Monthly + Initial Setup Fee</td>
+                            <td class="p-3 text-slate-600">Included in Base</td>
+                            <td class="p-3 text-emerald-600 font-medium">Standard Mitigation</td>
+                            <td class="p-3 text-rose-600 font-bold">High (High Density Overselling)</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-slate-900 text-slate-400 text-xs py-6 border-t border-slate-800 mt-12">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center space-y-2">
+            <p>Cloud Virtual Private Server Value & Technical Optimization Framework for Rosalpatti, Tamil Nadu.</p>
+            <p class="text-slate-500">Formulated with current base FX rates ($1 ≈ ₹87.50, €1 ≈ ₹96.50), 18% OIDAR GST, and standard banking markups.</p>
+        </div>
+    </footer>
+
+    <!-- JavaScript Application Logic -->
+    <script>
+        // Preset Data
+        const presets = {
+            hetzner: { price: 5.99, curr: "EUR", forex: 2.5, gst: 18 },
+            do: { price: 24.00, curr: "USD", forex: 2.5, gst: 18 },
+            vultr: { price: 20.00, curr: "USD", forex: 2.5, gst: 18 },
+            hostinger: { price: 799.00, curr: "INR", forex: 0.0, gst: 18 },
+            contabo: { price: 4.50, curr: "EUR", forex: 2.5, gst: 18 }
+        };
+
+        const fxRates = { USD: 87.50, EUR: 96.50, INR: 1.00 };
+
+        function loadPreset() {
+            const val = document.getElementById("calc-preset").value;
+            if (val !== "custom" && presets[val]) {
+                const p = presets[val];
+                document.getElementById("calc-price").value = p.price;
+                document.getElementById("calc-currency").value = p.curr;
+                document.getElementById("calc-forex-pct").value = p.forex;
+                document.getElementById("calc-gst-pct").value = p.gst;
+                calculateTrueCost();
+            }
+        }
+
+        function calculateTrueCost() {
+            const price = parseFloat(document.getElementById("calc-price").value) || 0;
+            const curr = document.getElementById("calc-currency").value;
+            const forexPct = parseFloat(document.getElementById("calc-forex-pct").value) || 0;
+            const gstPct = parseFloat(document.getElementById("calc-gst-pct").value) || 0;
+
+            const baseInr = price * fxRates[curr];
+            const forexInr = curr === "INR" ? 0 : baseInr * (forexPct / 100);
+            const subtotalInr = baseInr + forexInr;
+            const gstInr = subtotalInr * (gstPct / 100);
+            const totalInr = subtotalInr + gstInr;
+
+            document.getElementById("out-base-inr").textContent = "₹" + baseInr.toFixed(2);
+            document.getElementById("out-forex-inr").textContent = "₹" + forexInr.toFixed(2);
+            document.getElementById("out-subtotal-inr").textContent = "₹" + subtotalInr.toFixed(2);
+            document.getElementById("out-gst-inr").textContent = "₹" + gstInr.toFixed(2);
+            document.getElementById("out-total-inr").textContent = "₹" + totalInr.toFixed(2);
+        }
+
+        // Provider Filter Logic
+        function filterProviders(type) {
+            const cards = document.querySelectorAll('.provider-card');
+            cards.forEach(card => {
+                if (type === 'all') {
+                    card.style.display = 'flex';
+                } else if (type === 'india') {
+                    card.style.display = card.getAttribute('data-region') === 'india' ? 'flex' : 'none';
+                } else if (type === 'europe') {
+                    card.style.display = card.getAttribute('data-region') === 'europe' ? 'flex' : 'none';
+                } else if (type === 'inr') {
+                    card.style.display = card.getAttribute('data-inr') === 'true' ? 'flex' : 'none';
+                }
+            });
+
+            // Update Active Button Styles
+            ['all', 'india', 'europe', 'inr'].forEach(t => {
+                const btn = document.getElementById('btn-' + t);
+                if (t === type) {
+                    btn.className = "px-3 py-1.5 rounded-lg bg-slate-900 text-white shadow-sm transition";
+                } else {
+                    btn.className = "px-3 py-1.5 rounded-lg bg-slate-100 text-slate-700 hover:bg-slate-200 transition";
+                }
+            });
+        }
+
+        // Scenario Tab Switcher
+        function showScenario(id) {
+            document.querySelectorAll('.scenario-content').forEach(el => el.classList.add('hidden'));
+            document.getElementById(id).classList.remove('hidden');
+
+            document.querySelectorAll('.scenario-tab').forEach(btn => {
+                btn.className = "scenario-tab px-5 py-3.5 text-xs font-bold text-slate-600 hover:text-slate-900 transition";
+            });
+            const activeTab = document.getElementById('tab-' + id);
+            activeTab.className = "scenario-tab px-5 py-3.5 text-xs font-bold text-amber-600 border-b-2 border-amber-500 bg-white transition";
+        }
+
+        // Initialize Charts on DOM Loaded
+        document.addEventListener("DOMContentLoaded", function () {
+            calculateTrueCost();
+
+            // RAM Yield Chart
+            const ctxRam = document.getElementById('ramYieldChart').getContext('2d');
+            new Chart(ctxRam, {
+                type: 'bar',
+                data: {
+                    labels: ['Contabo', 'Hostinger', 'Hetzner', 'Vultr', 'DigitalOcean'],
+                    datasets: [{
+                        label: 'RAM (GB per ₹100 Spent)',
+                        data: [1.52, 0.85, 0.57, 0.19, 0.16],
+                        backgroundColor: ['#8b5cf6', '#d97706', '#10b981', '#6366f1', '#3b82f6'],
+                        borderRadius: 6
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: { legend: { display: false } },
+                    scales: {
+                        y: { beginAtZero: true, title: { display: true, text: 'GB / ₹100', font: { size: 11 } } }
+                    }
+                }
+            });
+
+            // Storage Yield Chart
+            const ctxStorage = document.getElementById('storageYieldChart').getContext('2d');
+            new Chart(ctxStorage, {
+                type: 'bar',
+                data: {
+                    labels: ['Contabo', 'Hostinger', 'Hetzner', 'Vultr', 'DigitalOcean'],
+                    datasets: [{
+                        label: 'Storage (GB per ₹100 Spent)',
+                        data: [14.28, 10.61, 5.72, 3.78, 3.15],
+                        backgroundColor: ['#8b5cf6', '#d97706', '#10b981', '#6366f1', '#3b82f6'],
+                        borderRadius: 6
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: { legend: { display: false } },
+                    scales: {
+                        y: { beginAtZero: true, title: { display: true, text: 'GB / ₹100', font: { size: 11 } } }
+                    }
+                }
+            });
+        });
+    </script>
+</body>
+</html>
