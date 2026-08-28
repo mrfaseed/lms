@@ -5,7 +5,7 @@ const BACKEND_URL = process.env.BACKEND_URL || 'http://127.0.0.1:8000';
 
 export async function PATCH(req: Request, { params }: { params: { id: string } }) {
   const id = params.id;
-  const cookieStore = cookies();
+  const cookieStore = await cookies();
   const access = cookieStore.get('access_token')?.value;
   const refresh = cookieStore.get('refresh_token')?.value;
 
@@ -60,7 +60,7 @@ export async function PATCH(req: Request, { params }: { params: { id: string } }
 
 export async function DELETE(req: Request, { params }: { params: { id: string } }) {
   const id = params.id;
-  const cookieStore = cookies();
+  const cookieStore = await cookies();
   const access = cookieStore.get('access_token')?.value;
   const refresh = cookieStore.get('refresh_token')?.value;
   const backendUrl = `${BACKEND_URL}/accounts/api/admin/users/${id}/`;

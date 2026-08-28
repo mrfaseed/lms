@@ -1,12 +1,25 @@
 'use client';
 
-import React, { useState } from 'react';
-import Image from 'next/image';
+import React, { useState, useEffect } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
+import { AlertCircle, Loader2, Eye, EyeOff } from 'lucide-react';
+import { DotLottiePlayer } from '@dotlottie/react-player';
+import '@dotlottie/react-player/dist/index.css';
 import { loginUser } from './actions';
 
 export default function LoginPage() {
   const [error, setError] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(false);
+  const [showPassword, setShowPassword] = useState(false);
+  const [ipAddress, setIpAddress] = useState<string>('Loading...');
+
+  // Mock fetching IP for the UI detail
+  useEffect(() => {
+    fetch('https://api.ipify.org?format=json')
+      .then(res => res.json())
+      .then(data => setIpAddress(data.ip))
+      .catch(() => setIpAddress('192.168.1.1')); // fallback
+  }, []);
 
   async function handleSubmit(formData: FormData) {
     setIsLoading(true);
@@ -20,144 +33,198 @@ export default function LoginPage() {
     }
   }
 
+  // Generate random floating blocks (Simatrix themed)
+  const backgroundBlocks = Array.from({ length: 12 }).map((_, i) => ({
+    id: i,
+    width: Math.random() * 60 + 20,
+    height: Math.random() * 60 + 20,
+    top: `${Math.random() * 100}%`,
+    left: `${Math.random() * 100}%`,
+    opacity: Math.random() * 0.15 + 0.05,
+    delay: Math.random() * 5,
+    duration: Math.random() * 10 + 10,
+  }));
+
   return (
-    <div className="flex min-h-screen w-full bg-white">
-      {/* Left side: Login Form */}
-      <div className="flex flex-1 flex-col justify-center px-4 py-12 sm:px-6 lg:flex-none lg:px-20 xl:px-24 w-full lg:w-1/2 z-10 bg-white">
-        <div className="mx-auto w-full max-w-sm lg:w-96">
-          <div>
-            <h2 className="mt-8 text-3xl font-extrabold tracking-tight text-slate-900">
-              Simatrix Academy
-            </h2>
-            <p className="mt-2 text-sm text-slate-600">
-              Welcome back, Developer! Please sign in to resume coding.
-            </p>
-          </div>
+    <div className="relative flex min-h-screen w-full bg-slate-50 overflow-hidden">
+      
+      {/* Animated Background Patterned Floating Blocks (Blue/Indigo Theme) */}
+      {backgroundBlocks.map(block => (
+        <motion.div 
+          key={block.id}
+          className="absolute bg-indigo-500 rounded-xl shadow-lg"
+          initial={{ y: 0, x: 0, rotate: 0 }}
+          animate={{ 
+            y: [0, -40, 0], 
+            x: [0, 30, 0],
+            rotate: [0, 45, 0]
+          }}
+          transition={{ 
+            duration: block.duration, 
+            repeat: Infinity, 
+            ease: "linear",
+            delay: block.delay 
+          }}
+          style={{
+            width: block.width,
+            height: block.height,
+            top: block.top,
+            left: block.left,
+            opacity: block.opacity,
+            backdropFilter: 'blur(8px)'
+          }}
+        />
+      ))}
 
-          <div className="mt-10">
-            <div className="mt-6">
-              <form action={handleSubmit} className="space-y-6">
+      <div className="relative z-10 flex w-full max-w-7xl mx-auto items-center">
+        
+        {/* Left side: Logo & Lottie Animation */}
+        <div className="hidden lg:flex w-1/2 flex-col items-center justify-center p-12 h-full">
+          {/* Simatrix Logo Lockup on the left side */}
+          <motion.div 
+            initial={{ opacity: 0, y: -20 }}
+            animate={{ opacity: 1, y: 0 }}
+            className="flex flex-col items-center gap-2 mb-10"
+          >
+            <div className="w-16 h-16 bg-gradient-to-br from-indigo-600 to-blue-500 rounded-2xl flex items-center justify-center shadow-xl shadow-indigo-500/30">
+              <span className="text-white font-bold text-3xl">S</span>
+            </div>
+            <h1 className="text-3xl font-extrabold text-slate-800 tracking-tight mt-4">Simatrix LMS</h1>
+            <p className="text-slate-500 font-medium">Learning Management System</p>
+          </motion.div>
+
+          <motion.div 
+            initial={{ opacity: 0, scale: 0.9 }}
+            animate={{ opacity: 1, scale: 1 }}
+            transition={{ delay: 0.2 }}
+            className="w-full max-w-lg"
+          >
+            <DotLottiePlayer
+              src="/Login.lottie"
+              autoplay
+              loop
+              style={{ width: '100%', height: '100%' }}
+            />
+          </motion.div>
+        </div>
+
+        {/* Right side: Login Form */}
+        <div className="w-full lg:w-1/2 flex flex-col justify-center px-4 py-12 sm:px-6 lg:px-20 h-full">
+          <motion.div 
+            initial={{ opacity: 0, x: 20 }}
+            animate={{ opacity: 1, x: 0 }}
+            className="mx-auto w-full max-w-md bg-white/80 backdrop-blur-xl p-8 rounded-3xl shadow-[0_8px_30px_rgb(0,0,0,0.04)] border border-white"
+          >
+            
+            <div className="mb-10 text-center flex flex-col items-center">
+              <h2 className="text-2xl font-bold tracking-tight text-slate-900 mb-2">
+                Welcome Back
+              </h2>
+              <p className="text-sm text-slate-500">Sign in to your portal to continue.</p>
+            </div>
+
+            <form action={handleSubmit} className="space-y-6">
+              
+              <AnimatePresence>
                 {error && (
-                  <div className="rounded-md bg-red-50 p-4 border border-red-200 shadow-sm animate-pulse">
-                    <div className="flex">
-                      <div className="flex-shrink-0">
-                        <svg className="h-5 w-5 text-red-400" fill="currentColor" viewBox="0 0 20 20">
-                          <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clipRule="evenodd" />
-                        </svg>
-                      </div>
-                      <div className="ml-3">
-                        <h3 className="text-sm font-medium text-red-800">Authentication Error</h3>
-                        <div className="mt-1 text-sm text-red-700">
-                          <p>{error}</p>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                )}
-
-                <div>
-                  <label htmlFor="username" className="block text-sm font-medium text-slate-700">
-                    Username
-                  </label>
-                  <div className="mt-1">
-                    <input
-                      id="username"
-                      name="username"
-                      type="text"
-                      required
-                      className="block w-full appearance-none rounded-lg border border-slate-300 px-3 py-2.5 placeholder-slate-400 shadow-sm focus:border-indigo-500 focus:outline-none focus:ring-1 focus:ring-indigo-500 sm:text-sm text-black transition-colors"
-                      placeholder="Enter your username"
-                    />
-                  </div>
-                </div>
-
-                <div>
-                  <label htmlFor="password" className="block text-sm font-medium text-slate-700">
-                    Password
-                  </label>
-                  <div className="mt-1">
-                    <input
-                      id="password"
-                      name="password"
-                      type="password"
-                      required
-                      className="block w-full appearance-none rounded-lg border border-slate-300 px-3 py-2.5 placeholder-slate-400 shadow-sm focus:border-indigo-500 focus:outline-none focus:ring-1 focus:ring-indigo-500 sm:text-sm text-black transition-colors"
-                      placeholder="••••••••"
-                    />
-                  </div>
-                </div>
-
-                <div className="flex items-center justify-between">
-                  <div className="flex items-center">
-                    <input
-                      id="remember-me"
-                      name="remember-me"
-                      type="checkbox"
-                      className="h-4 w-4 rounded border-slate-300 text-indigo-600 focus:ring-indigo-500"
-                    />
-                    <label htmlFor="remember-me" className="ml-2 block text-sm text-slate-900">
-                      Remember me
-                    </label>
-                  </div>
-
-                  <div className="text-sm">
-                    <a href="#" className="font-semibold text-indigo-600 hover:text-indigo-500 transition-colors">
-                      Forgot your password?
-                    </a>
-                  </div>
-                </div>
-
-                <div>
-                  <button
-                    type="submit"
-                    disabled={isLoading}
-                    className="flex w-full justify-center rounded-lg border border-transparent bg-indigo-600 py-3 px-4 text-sm font-bold text-white shadow-md hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 disabled:opacity-70 disabled:cursor-not-allowed transition-all active:scale-[0.98]"
+                  <motion.div 
+                    initial={{ opacity: 0, height: 0 }}
+                    animate={{ opacity: 1, height: 'auto' }}
+                    exit={{ opacity: 0, height: 0 }}
+                    className="overflow-hidden"
                   >
-                    {isLoading ? (
-                      <span className="flex items-center gap-2">
-                        <svg className="animate-spin -ml-1 mr-2 h-4 w-4 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-                          <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
-                          <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-                        </svg>
-                        Authenticating...
-                      </span>
+                    <div className="rounded-xl bg-rose-50 p-4 border border-rose-200 flex items-start gap-3 shadow-sm mb-4">
+                      <AlertCircle className="w-5 h-5 text-rose-500 shrink-0 mt-0.5" />
+                      <div className="text-sm text-rose-700 font-medium leading-relaxed">{error}</div>
+                    </div>
+                  </motion.div>
+                )}
+              </AnimatePresence>
+
+              <div className="space-y-2">
+                <label htmlFor="username" className="block text-sm font-semibold text-slate-700">
+                  Username
+                </label>
+                <input
+                  id="username"
+                  name="username"
+                  type="text"
+                  required
+                  className="block w-full rounded-xl border border-slate-200 px-4 py-3 placeholder-slate-400 focus:border-indigo-500 focus:outline-none focus:ring-2 focus:ring-indigo-500/20 sm:text-sm text-slate-900 transition-all bg-slate-50/50 hover:bg-slate-50"
+                  placeholder="Enter your username"
+                />
+              </div>
+
+              <div className="space-y-2">
+                <label htmlFor="password" className="block text-sm font-semibold text-slate-700">
+                  Password
+                </label>
+                <div className="relative">
+                  <input
+                    id="password"
+                    name="password"
+                    type={showPassword ? 'text' : 'password'}
+                    required
+                    className="block w-full rounded-xl border border-slate-200 px-4 py-3 placeholder-slate-400 focus:border-indigo-500 focus:outline-none focus:ring-2 focus:ring-indigo-500/20 sm:text-sm text-slate-900 transition-all bg-slate-50/50 hover:bg-slate-50 pr-12"
+                    placeholder="••••••••"
+                  />
+                  <button
+                    type="button"
+                    onClick={() => setShowPassword(!showPassword)}
+                    className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-indigo-600 transition-colors p-2"
+                  >
+                    {showPassword ? (
+                      <EyeOff className="w-5 h-5" />
                     ) : (
-                      'Sign in to your account'
+                      <Eye className="w-5 h-5" />
                     )}
                   </button>
                 </div>
-              </form>
-
-              <div className="mt-8 pt-6 border-t border-slate-100 flex flex-col items-center space-y-2">
-                <p className="text-xs text-slate-500">Not a student?</p>
-                <div className="flex space-x-4">
-                  <a href="/admin" className="text-xs font-semibold text-slate-400 hover:text-indigo-600 transition-colors">Staff / Lecturer Login</a>
-                  <span className="text-slate-300">|</span>
-                  <a href="/admin" className="text-xs font-semibold text-slate-400 hover:text-indigo-600 transition-colors">Admin Portal</a>
-                </div>
               </div>
+
+              <div className="flex items-center justify-between pt-1">
+                <div className="flex items-center">
+                  <input
+                    id="remember-me"
+                    name="remember-me"
+                    type="checkbox"
+                    className="h-4 w-4 rounded border-slate-300 text-indigo-600 focus:ring-indigo-500 cursor-pointer"
+                  />
+                  <label htmlFor="remember-me" className="ml-2 block text-sm font-medium text-slate-600 cursor-pointer">
+                    Remember Me
+                  </label>
+                </div>
+                <a href="#" className="text-sm font-semibold text-indigo-600 hover:text-indigo-500 transition-colors">
+                  Forgot Password?
+                </a>
+              </div>
+
+              <div className="pt-4">
+                <button
+                  type="submit"
+                  disabled={isLoading}
+                  className="flex w-full justify-center items-center gap-2 rounded-xl bg-indigo-600 py-3.5 px-4 text-sm font-bold text-white hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 disabled:opacity-70 disabled:cursor-not-allowed transition-all shadow-lg shadow-indigo-500/25 active:scale-[0.98]"
+                >
+                  {isLoading ? (
+                    <>
+                      <Loader2 className="w-5 h-5 animate-spin" />
+                      Authenticating...
+                    </>
+                  ) : (
+                    'Sign In'
+                  )}
+                </button>
+              </div>
+            </form>
+
+            <div className="mt-10 text-center space-y-1 pt-6 border-t border-slate-100">
+              <p className="text-xs font-medium text-slate-500">Secure Environment</p>
+              <p className="text-xs font-semibold text-slate-400">
+                IP Address Recorded: <span className="text-indigo-400">{ipAddress}</span>
+              </p>
             </div>
-          </div>
-        </div>
-      </div>
-      
-      {/* Right side: Hero Image */}
-      <div className="relative hidden w-0 flex-1 lg:block h-full">
-        <Image
-          className="absolute inset-0 h-full w-full object-cover"
-          src="/lms-hero.jpg"
-          alt="Futuristic University Campus"
-          fill
-          priority
-        />
-        <div className="absolute inset-0 bg-gradient-to-r from-indigo-900/60 to-purple-900/40 mix-blend-multiply" />
-        <div className="absolute bottom-10 left-10 right-10 p-8 rounded-2xl bg-white/10 backdrop-blur-md border border-white/20 shadow-2xl">
-          <h1 className="text-4xl font-extrabold text-white tracking-tight mb-2">
-            Code Your Future
-          </h1>
-          <p className="text-indigo-100 text-lg max-w-2xl font-medium">
-            Join the Simatrix developer community. Write code, solve problems, and land your dream tech job with our hands-on curriculum.
-          </p>
+
+          </motion.div>
         </div>
       </div>
     </div>

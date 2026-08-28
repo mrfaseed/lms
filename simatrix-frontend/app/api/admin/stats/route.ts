@@ -4,7 +4,7 @@ import { cookies } from 'next/headers';
 const BACKEND_URL = process.env.BACKEND_URL || 'http://127.0.0.1:8000';
 
 export async function GET() {
-  const cookieStore = cookies();
+  const cookieStore = await cookies();
   const access = cookieStore.get('access_token')?.value;
   const refresh = cookieStore.get('refresh_token')?.value;
 

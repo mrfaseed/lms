@@ -5,11 +5,12 @@ import Editor from '@monaco-editor/react';
 import { useSearchParams } from 'next/navigation';
 import { Panel, Group, Separator } from 'react-resizable-panels';
 import { 
-  Play, Send, Maximize2, Minimize2, FileCode, Plus, 
-  Settings, Save, FileText, Terminal, Clock, Cpu, X,
-  File, FolderPlus, Upload, CheckCircle2, AlertCircle
+  Play, Maximize2, Minimize2, File, FolderPlus, 
+  Upload, Terminal, FileText, X, CheckCircle2,
+  Plus, Send, Settings, Save, Clock, Cpu, FileCode, AlertCircle
 } from 'lucide-react';
 import { executeJavaScript, executePython, executeTypeScript, executeSQL, executeCppMock, executeJavaMock } from './executor';
+import { ExecutionManager } from './ExecutionManager';
 
 type VirtualFile = {
   id: string;
@@ -22,6 +23,33 @@ const DEFAULT_FILES: VirtualFile[] = [
   { id: 'f1', name: 'main.py', language: 'python', content: 'print("Hello, World!")' }
 ];
 
+const TerminalBootLoader = () => {
+  const [step, setStep] = useState(0);
+
+  useEffect(() => {
+    const t1 = setTimeout(() => setStep(1), 300);
+    const t2 = setTimeout(() => setStep(2), 600);
+    const t3 = setTimeout(() => setStep(3), 900);
+    const t4 = setTimeout(() => setStep(4), 1200);
+    return () => { clearTimeout(t1); clearTimeout(t2); clearTimeout(t3); clearTimeout(t4); };
+  }, []);
+
+  return (
+    <div className="flex flex-col w-full text-slate-300 font-mono text-sm space-y-2">
+      <div className="text-emerald-400 font-bold mb-2">&gt; Starting Python Runtime...</div>
+      {step >= 1 && <div className="text-slate-300"><span className="text-emerald-500 mr-2">✓</span>Loading Web Worker</div>}
+      {step >= 2 && <div className="text-slate-300"><span className="text-emerald-500 mr-2">✓</span>Initializing Environment</div>}
+      {step >= 3 && <div className="text-slate-300"><span className="text-emerald-500 mr-2">✓</span>Mounting Virtual Filesystem</div>}
+      {step >= 4 && (
+        <div className="text-slate-300 animate-pulse">
+          <span className="text-indigo-400 mr-2 animate-spin inline-block origin-center" style={{ lineHeight: 1 }}>⟳</span>
+          Downloading Python Engine...
+        </div>
+      )}
+    </div>
+  );
+};
+
 export default function CodeRunner() {
   const searchParams = useSearchParams();
   const assignmentId = searchParams.get('assignment') || searchParams.get('problem');
@@ -30,6 +58,11 @@ export default function CodeRunner() {
   // Layout & UI State
   const [isFullscreen, setIsFullscreen] = useState(false);
   const containerRef = useRef<HTMLDivElement>(null);
+  
+  // Execution Manager State
+  const execManagerRef = useRef<ExecutionManager | null>(null);
+  const [isAwaitingInput, setIsAwaitingInput] = useState(false);
+  const [terminalInput, setTerminalInput] = useState('');
   const [activeConsoleTab, setActiveConsoleTab] = useState<'output' | 'input'>('output');
 
   // VFS State
@@ -45,6 +78,7 @@ export default function CodeRunner() {
   // Execution State
   const [output, setOutput] = useState<string>('System ready. Waiting for execution...');
   const [isRunning, setIsRunning] = useState(false);
+  const [isInitializing, setIsInitializing] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [execMeta, setExecMeta] = useState<{ time: string; memory: string; code: number } | null>(null);
 
@@ -54,6 +88,16 @@ export default function CodeRunner() {
 
   // Context Menu State
   const [contextMenu, setContextMenu] = useState<{ x: number; y: number; fileId: string } | null>(null);
+
+  // Initialize ExecutionManager on mount
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      execManagerRef.current = new ExecutionManager();
+    }
+    return () => {
+      execManagerRef.current?.stop();
+    };
+  }, []);
   const [renamingFileId, setRenamingFileId] = useState<string | null>(null);
   const [renameValue, setRenameValue] = useState<string>('');
   
@@ -131,50 +175,40 @@ export default function CodeRunner() {
     setActiveConsoleTab('output');
     setOutput('');
     setExecMeta(null);
+    setIsAwaitingInput(false);
+    setTerminalInput('');
 
     const startTime = performance.now();
 
     try {
-      if (activeFile.language === 'javascript') {
-        const result = await executeJavaScript(activeFile.content);
-        const timeTaken = ((performance.now() - startTime) / 1000).toFixed(3);
-        setExecMeta({ time: timeTaken + 's', memory: '< 1 MB', code: result.exit_code });
-        setOutput(result.stderr ? result.stdout + '\n' + result.stderr : result.stdout);
-        setIsRunning(false);
+      if (activeFile.language === 'javascript' || activeFile.language === 'python') {
+        if (activeFile.language === 'python') setIsInitializing(true);
+        
+        execManagerRef.current?.run(activeFile.language, activeFile.content, {
+          onOutput: (msg) => {
+            setIsInitializing(false);
+            setOutput(prev => prev + msg);
+          },
+          onError: (msg) => {
+            setIsInitializing(false);
+            setOutput(prev => prev + '\n' + msg);
+          },
+          onInputRequest: () => {
+            setIsInitializing(false);
+            setIsAwaitingInput(true);
+          },
+          onExit: (code) => {
+            setIsInitializing(false);
+            const timeTaken = ((performance.now() - startTime) / 1000).toFixed(3);
+            setExecMeta({ time: timeTaken + 's', memory: activeFile.language === 'python' ? '~ 25 MB' : '< 1 MB', code });
+            setIsRunning(false);
+            setIsAwaitingInput(false);
+          }
+        });
         return;
       }
 
       if (activeFile.language === 'typescript') {
-        setOutput('Transpiling TypeScript (Downloading compiler on first run)...');
-        const result = await executeTypeScript(activeFile.content);
-        const timeTaken = ((performance.now() - startTime) / 1000).toFixed(3);
-        setExecMeta({ time: timeTaken + 's', memory: '< 5 MB', code: result.exit_code });
-        setOutput(result.stderr ? result.stdout + '\n' + result.stderr : result.stdout);
-        setIsRunning(false);
-        return;
-      }
-
-      if (activeFile.language === 'sql') {
-        setOutput('Initializing SQLite (Downloading engine on first run)...');
-        const result = await executeSQL(activeFile.content);
-        const timeTaken = ((performance.now() - startTime) / 1000).toFixed(3);
-        setExecMeta({ time: timeTaken + 's', memory: '~ 15 MB', code: result.exit_code });
-        setOutput(result.stderr ? result.stdout + '\n' + result.stderr : result.stdout);
-        setIsRunning(false);
-        return;
-      }
-
-      if (activeFile.language === 'python') {
-        setOutput('Initializing Pyodide (Downloading engine on first run)...');
-        const result = await executePython(activeFile.content, stdin);
-        const timeTaken = ((performance.now() - startTime) / 1000).toFixed(3);
-        setExecMeta({ time: timeTaken + 's', memory: '~ 25 MB', code: result.exit_code });
-        setOutput(result.stderr ? result.stdout + '\n' + result.stderr : result.stdout);
-        setIsRunning(false);
-        return;
-      }
-
-      if (activeFile.language === 'c' || activeFile.language === 'cpp') {
         setOutput('Compiling to WebAssembly (Mock)...');
         const result = await executeCppMock(activeFile.content);
         const timeTaken = ((performance.now() - startTime) / 1000).toFixed(3);
@@ -615,7 +649,7 @@ export default function CodeRunner() {
                 <div className="flex-1 overflow-hidden relative">
                   {activeConsoleTab === 'output' ? (
                     <div className="absolute inset-0 p-4 overflow-y-auto font-mono text-sm">
-                      {!output && !isRunning && !execMeta ? (
+                      {!output && !isRunning && !execMeta && !isInitializing ? (
                         <div className="text-slate-500 flex flex-col space-y-2 select-none border border-[#333] p-4 rounded-md bg-[#252526]">
                           <span className="font-bold text-slate-300 tracking-wider">SYSTEM READY</span>
                           <span className="flex items-center text-slate-400 mt-1">
@@ -624,12 +658,42 @@ export default function CodeRunner() {
                           </span>
                           <span className="text-slate-600 mt-4 text-xs">Press Ctrl+Enter or click Run to execute your code.</span>
                         </div>
-                      ) : isRunning ? (
-                        <div className="text-slate-400 animate-pulse">Running...</div>
+                      ) : isInitializing ? (
+                        <TerminalBootLoader />
                       ) : (
-                        <pre className={`whitespace-pre-wrap ${output.includes('Error:') || (execMeta?.code !== 0 && execMeta !== null) ? 'text-rose-400' : 'text-slate-300'}`}>
-                          {output}
-                        </pre>
+                        <div className="flex flex-col h-full w-full pb-4">
+                          <pre className={`whitespace-pre-wrap ${output.includes('Error:') || (execMeta?.code !== 0 && execMeta !== null) ? 'text-rose-400' : 'text-slate-300'}`}>
+                            {output}
+                          </pre>
+                          {execMeta !== null && !isRunning && (
+                            <div className={`mt-4 ${execMeta.code === 0 ? 'text-slate-500' : 'text-rose-500/70'}`}>
+                              === Code Execution {execMeta.code === 0 ? 'Successful' : 'Failed'} ===
+                            </div>
+                          )}
+                          {isAwaitingInput && (
+                            <div className="flex items-center mt-1">
+                              <span className="text-emerald-400 mr-2 font-bold animate-pulse">❯</span>
+                              <input 
+                                type="text"
+                                autoFocus
+                                value={terminalInput}
+                                onChange={(e) => setTerminalInput(e.target.value)}
+                                onKeyDown={(e) => {
+                                  if (e.key === 'Enter') {
+                                    execManagerRef.current?.provideInput(terminalInput);
+                                    setIsAwaitingInput(false);
+                                    setTerminalInput('');
+                                  }
+                                }}
+                                className="bg-transparent border-none outline-none flex-1 text-emerald-300 placeholder-slate-600"
+                                placeholder="Type input and press Enter..."
+                              />
+                            </div>
+                          )}
+                          {isRunning && !isAwaitingInput && !output && (
+                            <div className="text-slate-400 animate-pulse mt-2">Running...</div>
+                          )}
+                        </div>
                       )}
                     </div>
                   ) : (

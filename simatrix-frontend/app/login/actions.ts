@@ -58,19 +58,22 @@ export async function loginUser(formData: FormData) {
     
     if (meRes.ok) {
       const userData = await meRes.json();
+      
       if (userData.is_superuser) {
         redirectPath = '/admin';
-      } else if (userData.is_student) {
-        redirectPath = '/';
       } else if (userData.is_lecturer) {
         redirectPath = '/lecturer';
+      } else if (userData.is_student) {
+        redirectPath = '/';
       } else {
-        // Clear cookies if neither admin nor student nor lecturer
         cookieStore.delete('access_token');
         cookieStore.delete('refresh_token');
         return { error: 'Access denied. Unknown role.' };
       }
+
     } else {
+      cookieStore.delete('access_token');
+      cookieStore.delete('refresh_token');
       return { error: 'Failed to verify user profile.' };
     }
 
@@ -88,3 +91,4 @@ export async function logoutUser() {
   cookieStore.delete('refresh_token');
   redirect('/login');
 }
+

@@ -8,12 +8,7 @@ export async function GET(req: Request) {
   const access = cookieStore.get('access_token')?.value;
   const refresh = cookieStore.get('refresh_token')?.value;
 
-  const url = new URL(req.url);
-  const page = url.searchParams.get('page') || '1';
-  const page_size = url.searchParams.get('page_size') || '10';
-  const q = url.searchParams.get('q') || '';
-
-  const backendUrl = `${BACKEND_URL}/accounts/api/admin/users/?page=${encodeURIComponent(page)}&page_size=${encodeURIComponent(page_size)}${q ? `&q=${encodeURIComponent(q)}` : ''}`;
+  const backendUrl = `${BACKEND_URL}/api/programs/courses/`;
 
   try {
     const res = await fetch(backendUrl, {
@@ -32,14 +27,14 @@ export async function GET(req: Request) {
       if (!refreshRes.ok) return NextResponse.json({ detail: 'Unauthorized' }, { status: 401 });
 
       const refreshData = await refreshRes.json();
-      const usersRes = await fetch(backendUrl, {
+      const coursesRes = await fetch(backendUrl, {
         headers: { Authorization: 'Bearer ' + refreshData.access },
         cache: 'no-store',
       });
 
-      if (!usersRes.ok) return NextResponse.json({ detail: 'Unauthorized' }, { status: 401 });
+      if (!coursesRes.ok) return NextResponse.json({ detail: 'Unauthorized' }, { status: 401 });
 
-      const data = await usersRes.json();
+      const data = await coursesRes.json();
       const resp = NextResponse.json(data);
 
       // Update cookies on client
@@ -49,7 +44,7 @@ export async function GET(req: Request) {
       return resp;
     }
 
-    return NextResponse.json({ detail: 'Unable to fetch users' }, { status: res.status });
+    return NextResponse.json({ detail: 'Unable to fetch courses' }, { status: res.status });
   } catch (err) {
     return NextResponse.json({ detail: 'Server error' }, { status: 500 });
   }
