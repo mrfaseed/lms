@@ -20,7 +20,8 @@ async function getLecturerCourses() {
   const payload = JSON.parse(payloadStr);
   const userId = payload.user_id;
 
-  const res = await fetch(`http://127.0.0.1:8000/api/course/lecturer/${userId}/courses/`, {
+  const DJANGO_API_URL = process.env.NEXT_PUBLIC_DJANGO_API_URL || 'http://127.0.0.1:8000';
+  const res = await fetch(`${DJANGO_API_URL}/api/course/lecturer/${userId}/courses/`, {
     headers: {
       Authorization: `Bearer ${token}`
     },
@@ -28,7 +29,7 @@ async function getLecturerCourses() {
   });
 
   if (!res.ok) {
-    // If it fails, return empty list
+    console.error(`Failed to fetch lecturer courses (${res.status}):`, await res.text().catch(() => ''));
     return [];
   }
 

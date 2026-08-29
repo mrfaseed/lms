@@ -11,8 +11,12 @@ export default function AdminSidebar() {
 
   const navItems = [
     { name: 'Dashboard', href: '/admin', icon: LayoutDashboard },
-    { name: 'Users', href: '/admin/users', icon: Users },
+    { name: 'Programs', href: '/admin/programs', icon: BookOpen },
     { name: 'Courses', href: '/admin/courses', icon: BookOpen },
+    { name: 'Enrollments', href: '/admin/enrollments', icon: BookOpen },
+    { name: 'Tests Engine', href: '/admin/tests', icon: BookOpen },
+    { name: 'Users', href: '/admin/users', icon: Users },
+    { name: 'Allocations', href: '/admin/allocations', icon: Users },
     { name: 'Settings', href: '/admin/settings', icon: Settings },
   ];
 

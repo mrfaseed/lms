@@ -31,6 +31,12 @@ class QuizTakeAPIView(APIView):
         sitting = Sitting.objects.user_sitting(request.user, quiz, course)
         if sitting is False:
             return Response({'error': 'You have already taken this single-attempt quiz.'}, status=status.HTTP_400_BAD_REQUEST)
+            
+        if sitting.terminated:
+            return Response({
+                'terminated': True,
+                'violation_reason': sitting.violation_reason
+            }, status=status.HTTP_403_FORBIDDEN)
 
         # Get first question from the sitting's question_list
         question = sitting.get_first_question()
@@ -90,3 +96,25 @@ class QuizSubmitAPIView(APIView):
         sitting.remove_first_question()
         
         return Response({'success': True, 'correct': is_correct if hasattr(question, 'mcquestion') else False})
+
+class QuizViolateAPIView(APIView):
+    """
+    Called by Wasm Proctoring to register a violation (tab switch, etc.) and terminate the test.
+    """
+    permission_classes = [IsAuthenticated]
+
+    def post(self, request, quiz_slug):
+        quiz = get_object_or_404(Quiz, slug=quiz_slug)
+        sitting = Sitting.objects.user_sitting(request.user, quiz, quiz.course)
+        
+        if sitting is False:
+            return Response({'error': 'No active sitting found.'}, status=status.HTTP_400_BAD_REQUEST)
+            
+        reason = request.data.get('reason', 'Strict-mode violation detected')
+        
+        sitting.terminated = True
+        sitting.violation_reason = reason
+        sitting.mark_quiz_complete() # lock it down
+        sitting.save()
+        
+        return Response({'success': True, 'message': 'Test terminated due to violation.'})

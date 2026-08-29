@@ -59,8 +59,23 @@ export default function LecturerDashboardView({ courses }: { courses: any[] }) {
                   <span className="text-sm font-bold text-indigo-600">{course.credit} Credits</span>
                 </div>
                 
-                <div className="flex space-x-3">
-                  <Link href={`/lecturer/gradebook?course=${course.id}`} className="flex-1 text-center py-2 bg-indigo-50 text-indigo-700 hover:bg-indigo-600 hover:text-white font-semibold rounded-xl transition-colors shadow-sm">
+                {course.summary && (
+                  <p className="text-slate-500 text-sm line-clamp-2 mb-4 leading-relaxed">
+                    {course.summary}
+                  </p>
+                )}
+
+                <div className="grid grid-cols-2 gap-3">
+                  <Link 
+                    href={`/lecturer/courses/${course.slug}/materials`} 
+                    className="text-center py-2.5 px-3 bg-indigo-600 hover:bg-indigo-700 text-white font-semibold rounded-xl text-sm transition-all shadow-md shadow-indigo-500/20"
+                  >
+                    Materials
+                  </Link>
+                  <Link 
+                    href={`/lecturer/gradebook?course=${course.id}`} 
+                    className="text-center py-2.5 px-3 bg-slate-100 hover:bg-slate-200 text-slate-700 font-semibold rounded-xl text-sm transition-colors"
+                  >
                     Gradebook
                   </Link>
                 </div>

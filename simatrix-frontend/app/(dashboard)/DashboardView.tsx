@@ -18,6 +18,34 @@ export default function DashboardView({ stats }: { stats: any }) {
     show: { opacity: 1, y: 0, transition: { type: 'spring', stiffness: 300, damping: 24 } }
   };
 
+  const [catalog, setCatalog] = React.useState<any[]>([]);
+
+  React.useEffect(() => {
+    fetch('/api/catalog')
+      .then(res => res.ok ? res.json() : [])
+      .then(data => setCatalog(data))
+      .catch(err => console.error(err));
+  }, []);
+
+  const handleEnroll = async (courseId: number) => {
+    try {
+      const res = await fetch('/api/student/enroll', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ course_id: courseId })
+      });
+      const data = await res.json();
+      if (res.ok) {
+        alert(data.message || 'Successfully enrolled!');
+        window.location.reload();
+      } else {
+        alert(data.error || 'Failed to enroll');
+      }
+    } catch (err) {
+      alert('Network error while enrolling');
+    }
+  };
+
   return (
     <motion.div 
       className="max-w-7xl mx-auto space-y-8"
@@ -98,6 +126,36 @@ export default function DashboardView({ stats }: { stats: any }) {
               </div>
             </motion.div>
           </div>
+
+          {/* New Ad Section: Recommended Courses */}
+          {catalog.length > 0 && (
+            <motion.div variants={itemVariants} className="bg-gradient-to-br from-amber-50 to-orange-50 rounded-2xl shadow-sm border border-amber-100 overflow-hidden">
+              <div className="px-6 py-4 border-b border-amber-100 bg-amber-100/50 flex items-center justify-between">
+                <h2 className="text-lg font-bold text-amber-900 flex items-center gap-2">
+                  <svg className="w-5 h-5 text-amber-500" fill="currentColor" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/></svg>
+                  Recommended for You
+                </h2>
+              </div>
+              <div className="p-6 grid grid-cols-1 sm:grid-cols-2 gap-4">
+                {catalog.map(course => (
+                  <div key={course.id} className="bg-white rounded-xl border border-amber-100 p-4 shadow-sm hover:shadow-md transition-shadow relative overflow-hidden group">
+                    {course.is_promoted && (
+                      <div className="absolute top-2 right-2 w-2 h-2 rounded-full bg-amber-500 animate-pulse"></div>
+                    )}
+                    <h3 className="font-bold text-slate-900 mb-1">{course.title}</h3>
+                    <p className="text-xs text-slate-500 line-clamp-2 mb-4">{course.summary || 'Discover this amazing course.'}</p>
+                    <button 
+                      onClick={() => handleEnroll(course.id)}
+                      disabled={course.enrollment_strategy === 'CLOSED'}
+                      className={`w-full py-2 rounded-lg text-sm font-bold transition-colors ${course.enrollment_strategy === 'CLOSED' ? 'bg-slate-100 text-slate-400' : 'bg-amber-100 text-amber-700 hover:bg-amber-200'}`}
+                    >
+                      {course.enrollment_strategy === 'OPEN' ? 'Enroll Now' : course.enrollment_strategy === 'APPROVAL' ? 'Request Access' : 'Closed'}
+                    </button>
+                  </div>
+                ))}
+              </div>
+            </motion.div>
+          )}
 
         </div>
 

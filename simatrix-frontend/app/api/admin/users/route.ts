@@ -12,8 +12,9 @@ export async function GET(req: Request) {
   const page = url.searchParams.get('page') || '1';
   const page_size = url.searchParams.get('page_size') || '10';
   const q = url.searchParams.get('q') || '';
+  const role = url.searchParams.get('role') || '';
 
-  const backendUrl = `${BACKEND_URL}/accounts/api/admin/users/?page=${encodeURIComponent(page)}&page_size=${encodeURIComponent(page_size)}${q ? `&q=${encodeURIComponent(q)}` : ''}`;
+  const backendUrl = `${BACKEND_URL}/accounts/api/admin/users/?page=${encodeURIComponent(page)}&page_size=${encodeURIComponent(page_size)}${q ? `&q=${encodeURIComponent(q)}` : ''}${role ? `&role=${encodeURIComponent(role)}` : ''}`;
 
   try {
     const res = await fetch(backendUrl, {
@@ -52,5 +53,29 @@ export async function GET(req: Request) {
     return NextResponse.json({ detail: 'Unable to fetch users' }, { status: res.status });
   } catch (err) {
     return NextResponse.json({ detail: 'Server error' }, { status: 500 });
+  }
+}
+
+export async function POST(req: Request) {
+  const cookieStore = await cookies();
+  const access = cookieStore.get('access_token')?.value;
+  
+  if (!access) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+
+  try {
+    const body = await req.json();
+    const res = await fetch(`${BACKEND_URL}/accounts/api/admin/users/`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${access}`
+      },
+      body: JSON.stringify(body)
+    });
+    
+    const data = await res.json();
+    return NextResponse.json(data, { status: res.status });
+  } catch (err) {
+    return NextResponse.json({ error: 'Server connection failed' }, { status: 500 });
   }
 }

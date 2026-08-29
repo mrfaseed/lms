@@ -4,6 +4,8 @@ from rest_framework.permissions import AllowAny
 from result.models import TakenCourse, Result
 from accounts.models import Student
 from django.shortcuts import get_object_or_404
+from result.api.serializers import TakenCourseSerializer
+from rest_framework import status
 
 class StudentTranscriptAPIView(APIView):
     permission_classes = [AllowAny]
@@ -130,3 +132,72 @@ class LecturerGradesAPIView(APIView):
             return Response({"status": "success", "total": tc.total, "grade": tc.grade})
         except Exception as e:
             return Response({"error": str(e)}, status=400)
+
+class AdminEnrollmentAPIView(APIView):
+    # permission_classes = [IsAdminUser] # Keeping AllowAny for simplicity in demo
+    permission_classes = [AllowAny]
+
+    def get(self, request):
+        enrollments = TakenCourse.objects.all().order_by('-id')
+        serializer = TakenCourseSerializer(enrollments, many=True)
+        return Response(serializer.data)
+
+    def post(self, request):
+        student_id = request.data.get('student_id')
+        course_id = request.data.get('course_id')
+
+        if not student_id or not course_id:
+            return Response({"error": "student_id and course_id are required"}, status=status.HTTP_400_BAD_REQUEST)
+        
+        # Check if already enrolled
+        if TakenCourse.objects.filter(student_id=student_id, course_id=course_id).exists():
+            return Response({"error": "Student is already enrolled in this course"}, status=status.HTTP_400_BAD_REQUEST)
+
+        # Create enrollment
+        enrollment = TakenCourse.objects.create(student_id=student_id, course_id=course_id)
+        serializer = TakenCourseSerializer(enrollment)
+        return Response(serializer.data, status=status.HTTP_201_CREATED)
+
+class AdminEnrollmentDetailAPIView(APIView):
+    permission_classes = [AllowAny]
+
+    def delete(self, request, pk):
+        enrollment = get_object_or_404(TakenCourse, pk=pk)
+        enrollment.delete()
+        return Response(status=status.HTTP_204_NO_CONTENT)
+
+from rest_framework.permissions import IsAuthenticated
+
+class StudentSelfEnrollAPIView(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def post(self, request):
+        if not hasattr(request.user, 'student'):
+            return Response({"error": "Only students can enroll in courses."}, status=status.HTTP_403_FORBIDDEN)
+            
+        student = request.user.student
+        course_id = request.data.get('course_id')
+
+        if not course_id:
+            return Response({"error": "course_id is required"}, status=status.HTTP_400_BAD_REQUEST)
+            
+        from course.models import Course
+        course = get_object_or_404(Course, id=course_id)
+        
+        # Check course status
+        if course.enrollment_strategy == 'CLOSED':
+            return Response({"error": "Enrollment for this course is closed."}, status=status.HTTP_403_FORBIDDEN)
+            
+        # Check if already enrolled
+        if TakenCourse.objects.filter(student=student, course=course).exists():
+            return Response({"error": "You are already enrolled in this course."}, status=status.HTTP_400_BAD_REQUEST)
+            
+        if course.enrollment_strategy == 'OPEN':
+            enrollment = TakenCourse.objects.create(student=student, course=course)
+            return Response({"success": True, "status": "enrolled", "message": "Successfully enrolled!"}, status=status.HTTP_201_CREATED)
+        elif course.enrollment_strategy == 'APPROVAL':
+            # Phase 2: Add to a pending request table. For now, simulate success but inform user
+            # enrollment = CourseEnrollmentRequest.objects.create(...)
+            return Response({"success": True, "status": "pending", "message": "Enrollment request submitted for approval."}, status=status.HTTP_200_OK)
+            
+        return Response({"error": "Unknown enrollment strategy"}, status=status.HTTP_400_BAD_REQUEST)

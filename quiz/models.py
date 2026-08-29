@@ -267,6 +267,11 @@ class SittingManager(models.Manager):
         return new_sitting
 
     def user_sitting(self, user, quiz, course):
+        # If there is a terminated sitting, block any further attempts unless reset
+        terminated_sitting = self.filter(user=user, quiz=quiz, course=course, terminated=True).first()
+        if terminated_sitting:
+            return terminated_sitting
+            
         if (
             quiz.single_attempt is True
             and self.filter(user=user, quiz=quiz, course=course, complete=True).exists()
@@ -314,6 +319,12 @@ class Sitting(models.Model):
     current_score = models.IntegerField(verbose_name=_("Current Score"))
     complete = models.BooleanField(
         default=False, blank=False, verbose_name=_("Complete")
+    )
+    terminated = models.BooleanField(
+        default=False, blank=False, verbose_name=_("Terminated Due to Violation")
+    )
+    violation_reason = models.CharField(
+        max_length=255, blank=True, verbose_name=_("Violation Reason")
     )
     user_answers = models.TextField(
         blank=True, default="{}", verbose_name=_("User Answers")

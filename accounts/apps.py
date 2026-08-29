@@ -9,6 +9,7 @@ class AccountsConfig(AppConfig):
         from .models import User
         from .signals import post_save_account_receiver
 
-        post_save.connect(post_save_account_receiver, sender=User)
+        # Disable the legacy academic signal that overrides manually set usernames and passwords
+        # post_save.connect(post_save_account_receiver, sender=User)
 
         return super().ready()

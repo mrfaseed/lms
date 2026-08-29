@@ -4,8 +4,10 @@ import { cookies } from 'next/headers';
 import { redirect } from 'next/navigation';
 
 export async function loginUser(formData: FormData) {
-  const username = formData.get('username') as string;
-  const password = formData.get('password') as string;
+  const username = (formData.get('username') as string || '').trim();
+  const password = (formData.get('password') as string || '').trim();
+
+  console.log(`[LOGIN ATTEMPT] username: "${username}", password length: ${password?.length}`);
 
   if (!username || !password) {
     return { error: 'Username and password are required' };
@@ -14,41 +16,40 @@ export async function loginUser(formData: FormData) {
   let redirectPath = '/';
 
   try {
-    const res = await fetch('http://127.0.0.1:8000/accounts/api/token/', {
+    const res = await fetch(`http://127.0.0.1:8000/accounts/api/token/?t=${Date.now()}`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
+        'Cache-Control': 'no-cache, no-store, must-revalidate'
       },
       body: JSON.stringify({ username, password }),
       cache: 'no-store'
     });
 
     const data = await res.json();
+    console.log(`[LOGIN RESPONSE] status: ${res.status}, ok: ${res.ok}, data:`, data);
 
     if (!res.ok) {
       return { error: data.detail || 'Invalid credentials' };
     }
 
-    // Use await for cookies in Next.js 15+ compatible way
     const cookieStore = await cookies();
     
-    // Store tokens in HTTP-only cookies
     cookieStore.set('access_token', data.access, {
       httpOnly: true,
       secure: process.env.NODE_ENV === 'production',
-      maxAge: 7 * 24 * 60 * 60, // 7 days
+      maxAge: 7 * 24 * 60 * 60,
       path: '/',
     });
     
     cookieStore.set('refresh_token', data.refresh, {
       httpOnly: true,
       secure: process.env.NODE_ENV === 'production',
-      maxAge: 14 * 24 * 60 * 60, // 14 days
+      maxAge: 14 * 24 * 60 * 60,
       path: '/',
     });
 
-    // Check user role
-    const meUrl = 'http://127.0.0.1:8000/accounts/api/me/';
+    const meUrl = `http://127.0.0.1:8000/accounts/api/me/?t=${Date.now()}`;
     const meRes = await fetch(meUrl, {
       headers: {
         'Authorization': 'Bearer ' + data.access,
@@ -77,8 +78,9 @@ export async function loginUser(formData: FormData) {
       return { error: 'Failed to verify user profile.' };
     }
 
-  } catch (error) {
-    return { error: 'An unexpected error occurred. Please try again.' };
+  } catch (error: any) {
+    console.error("LOGIN ERROR:", error);
+    return { error: `Server connection failed: ${error.message || 'Unknown error'}` };
   }
 
   // Redirect to respective dashboard on success

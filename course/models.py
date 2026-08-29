@@ -11,36 +11,6 @@ from django.utils.translation import gettext_lazy as _
 from .utils import *
 from core.models import ActivityLog
 
-YEARS = (
-    (1, "1"),
-    (2, "2"),
-    (3, "3"),
-    (4, "4"),
-    (4, "5"),
-    (4, "6"),
-)
-
-# LEVEL_COURSE = "Level course"
-BACHELOR_DEGREE = _("Bachelor")
-MASTER_DEGREE = _("Master")
-
-LEVEL = (
-    # (LEVEL_COURSE, "Level course"),
-    (BACHELOR_DEGREE, _("Bachelor Degree")),
-    (MASTER_DEGREE, _("Master Degree")),
-)
-
-FIRST = _("First")
-SECOND = _("Second")
-THIRD = _("Third")
-
-SEMESTER = (
-    (FIRST, _("First")),
-    (SECOND, _("Second")),
-    (THIRD, _("Third")),
-)
-
-
 class ProgramManager(models.Manager):
     def search(self, query=None):
         queryset = self.get_queryset()
@@ -93,15 +63,23 @@ class CourseManager(models.Manager):
 
 
 class Course(models.Model):
+    ENROLLMENT_CHOICES = (
+        ('OPEN', 'Open'),
+        ('APPROVAL', 'Approval Required'),
+        ('CLOSED', 'Closed'),
+    )
+
     slug = models.SlugField(blank=True, unique=True)
     title = models.CharField(max_length=200, null=True)
     code = models.CharField(max_length=200, unique=True, null=True)
     summary = models.TextField(max_length=200, blank=True, null=True)
-    program = models.ForeignKey(Program, on_delete=models.CASCADE)
-    level = models.CharField(max_length=25, choices=LEVEL, null=True)
-    year = models.IntegerField(choices=YEARS, default=0)
-    semester = models.CharField(choices=SEMESTER, max_length=200)
+    program = models.ForeignKey(Program, on_delete=models.CASCADE, null=True, blank=True)
     is_elective = models.BooleanField(default=False, blank=True, null=True)
+    
+    # Visibility and Enrollment Settings
+    is_published = models.BooleanField(default=False, blank=True)
+    is_promoted = models.BooleanField(default=False, blank=True)
+    enrollment_strategy = models.CharField(max_length=20, choices=ENROLLMENT_CHOICES, default='OPEN')
 
     objects = CourseManager()
 
@@ -110,18 +88,6 @@ class Course(models.Model):
 
     def get_absolute_url(self):
         return reverse("course_detail", kwargs={"slug": self.slug})
-
-    @property
-    def is_current_semester(self):
-        from core.models import Semester
-
-        current_semester = Semester.objects.get(is_current_semester=True)
-
-        if self.semester == current_semester.semester:
-            return True
-        else:
-            return False
-
 
 def course_pre_save_receiver(sender, instance, *args, **kwargs):
     if not instance.slug:

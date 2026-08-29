@@ -87,8 +87,13 @@ class AdminUserListAPIView(APIView):
         User = get_user_model()
         qs = User.objects.all().order_by('-date_joined')
         q = request.GET.get('q')
+        role = request.GET.get('role')
         if q:
             qs = qs.filter(username__icontains=q)
+        if role == 'lecturer':
+            qs = qs.filter(is_lecturer=True)
+        elif role == 'student':
+            qs = qs.filter(is_student=True)
 
         # Pagination parameters
         page = request.GET.get('page', 1)
@@ -108,6 +113,37 @@ class AdminUserListAPIView(APIView):
             'num_pages': paginator.num_pages,
             'results': serializer.data,
         })
+
+    def post(self, request):
+        user = request.user
+        if not user.is_superuser:
+            return Response({'detail': 'Admin access required.'}, status=status.HTTP_403_FORBIDDEN)
+            
+        username = request.data.get('username')
+        password = request.data.get('password')
+        email = request.data.get('email')
+        role = request.data.get('role', 'student')
+        
+        if not username or not password:
+            return Response({'error': 'Username and password are required.'}, status=status.HTTP_400_BAD_REQUEST)
+            
+        User = get_user_model()
+        if User.objects.filter(username=username).exists():
+            return Response({'error': 'Username already exists.'}, status=status.HTTP_400_BAD_REQUEST)
+            
+        new_user = User(username=username, email=email)
+        new_user.set_password(password)
+        
+        if role == 'superuser':
+            new_user.is_superuser = True
+            new_user.is_staff = True
+        elif role == 'lecturer':
+            new_user.is_lecturer = True
+        else:
+            new_user.is_student = True
+            
+        new_user.save()
+        return Response({'success': True, 'id': new_user.id}, status=status.HTTP_201_CREATED)
 
 
 from rest_framework.generics import RetrieveUpdateDestroyAPIView
@@ -131,3 +167,5 @@ class AdminUserDetailAPIView(RetrieveUpdateDestroyAPIView):
         if not request.user.is_superuser:
             return Response({'detail': 'Admin access required.'}, status=status.HTTP_403_FORBIDDEN)
         return super().destroy(request, *args, **kwargs)
+
+# Trigger reload

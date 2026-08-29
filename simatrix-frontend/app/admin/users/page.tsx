@@ -29,6 +29,11 @@ export default function UsersManagementPage() {
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
   const [editForm, setEditForm] = useState({ first_name: '', last_name: '', email: '' });
 
+  // Create State
+  const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
+  const [createForm, setCreateForm] = useState({ username: '', password: '', email: '', role: 'student' });
+  const [createError, setCreateError] = useState('');
+
   // Delete State
   const [deletingUser, setDeletingUser] = useState<User | null>(null);
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
@@ -71,6 +76,29 @@ export default function UsersManagementPage() {
       if (res.ok) loadUsers();
     } catch (err) {
       console.error(err);
+    }
+  }
+
+  async function submitCreate(e: React.FormEvent) {
+    e.preventDefault();
+    setCreateError('');
+    try {
+      const res = await fetch(`/api/admin/users`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(createForm),
+      });
+      if (res.ok) {
+        setIsCreateModalOpen(false);
+        setCreateForm({ username: '', password: '', email: '', role: 'student' });
+        loadUsers();
+      } else {
+        const data = await res.json();
+        setCreateError(data.error || data.detail || 'Failed to create user');
+      }
+    } catch (err) {
+      console.error(err);
+      setCreateError('Server connection failed');
     }
   }
 
@@ -140,7 +168,7 @@ export default function UsersManagementPage() {
               className="w-full pl-9 pr-4 py-2 bg-slate-50 border border-slate-200 rounded-lg text-sm focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 outline-none transition-all"
             />
           </form>
-          <button type="button" className="px-4 py-2 bg-indigo-600 text-white rounded-lg text-sm font-medium hover:bg-indigo-700 transition-colors shadow-sm shadow-indigo-500/20 whitespace-nowrap">
+          <button type="button" onClick={() => setIsCreateModalOpen(true)} className="px-4 py-2 bg-indigo-600 text-white rounded-lg text-sm font-medium hover:bg-indigo-700 transition-colors shadow-sm shadow-indigo-500/20 whitespace-nowrap">
             Add User
           </button>
         </div>
@@ -250,6 +278,62 @@ export default function UsersManagementPage() {
           </div>
         )}
       </div>
+
+      {/* Create User Modal */}
+      <Modal isOpen={isCreateModalOpen} onClose={() => setIsCreateModalOpen(false)} title="Create New User">
+        <form onSubmit={submitCreate} className="space-y-4">
+          <div className="space-y-1">
+            <label className="text-sm font-medium text-slate-700">Username *</label>
+            <input 
+              type="text" 
+              required
+              value={createForm.username} 
+              onChange={e => setCreateForm({...createForm, username: e.target.value})} 
+              className="w-full px-3 py-2 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500"
+            />
+          </div>
+          <div className="space-y-1">
+            <label className="text-sm font-medium text-slate-700">Password *</label>
+            <input 
+              type="password" 
+              required
+              value={createForm.password} 
+              onChange={e => setCreateForm({...createForm, password: e.target.value})} 
+              className="w-full px-3 py-2 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500"
+            />
+          </div>
+          <div className="space-y-1">
+            <label className="text-sm font-medium text-slate-700">Email Address</label>
+            <input 
+              type="email" 
+              value={createForm.email} 
+              onChange={e => setCreateForm({...createForm, email: e.target.value})} 
+              className="w-full px-3 py-2 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500"
+            />
+          </div>
+          <div className="space-y-1">
+            <label className="text-sm font-medium text-slate-700">Role</label>
+            <select 
+              value={createForm.role}
+              onChange={e => setCreateForm({...createForm, role: e.target.value})}
+              className="w-full px-3 py-2 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 bg-white"
+            >
+              <option value="student">Student</option>
+              <option value="lecturer">Lecturer</option>
+              <option value="superuser">Admin / Superuser</option>
+            </select>
+          </div>
+          {createError && <p className="text-sm text-rose-500">{createError}</p>}
+          <div className="pt-4 flex justify-end gap-3">
+            <button type="button" onClick={() => setIsCreateModalOpen(false)} className="px-4 py-2 text-sm font-medium text-slate-600 hover:text-slate-800 transition-colors">
+              Cancel
+            </button>
+            <button type="submit" className="px-4 py-2 bg-indigo-600 text-white rounded-lg text-sm font-medium hover:bg-indigo-700 transition-colors shadow-sm">
+              Create User
+            </button>
+          </div>
+        </form>
+      </Modal>
 
       {/* Edit Modal */}
       <Modal isOpen={isEditModalOpen} onClose={() => setIsEditModalOpen(false)} title="Edit User Details">
