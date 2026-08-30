@@ -93,6 +93,12 @@ class TakenCourse(models.Model):
     total = models.DecimalField(max_digits=5, decimal_places=2, default=0.0)
     grade = models.CharField(choices=GRADE, max_length=2, blank=True)
     point = models.DecimalField(max_digits=5, decimal_places=2, default=0.0)
+    ENROLLMENT_STATUS = (
+        ('PENDING', 'Pending'),
+        ('APPROVED', 'Approved'),
+        ('REJECTED', 'Rejected'),
+    )
+    status = models.CharField(max_length=20, choices=ENROLLMENT_STATUS, default='APPROVED')
     comment = models.CharField(choices=COMMENT, max_length=200, blank=True)
 
     def get_absolute_url(self):

@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useState, useEffect } from 'react';
-import { UserCheck, Trash2, Plus, Search, BookOpen, AlertCircle } from 'lucide-react';
+import { UserCheck, Trash2, Plus, Search, BookOpen, AlertCircle, CheckCircle2 } from 'lucide-react';
 export default function EnrollmentsPage() {
   const [enrollments, setEnrollments] = useState<any[]>([]);
   const [students, setStudents] = useState<any[]>([]);
@@ -104,6 +104,24 @@ export default function EnrollmentsPage() {
     }
   }
 
+  async function handleApprove(id: number) {
+    if (!confirm('Approve this enrollment request?')) return;
+    try {
+      const res = await fetch(`/api/admin/enrollments/${id}`, {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ status: 'APPROVED' })
+      });
+      if (res.ok) {
+        fetchData();
+      } else {
+        alert('Failed to approve');
+      }
+    } catch (error) {
+      alert('Server error');
+    }
+  }
+
   return (
     <div className="p-8 max-w-7xl mx-auto space-y-8">
       {/* Header Section */}
@@ -146,6 +164,7 @@ export default function EnrollmentsPage() {
                 <tr className="bg-slate-50 border-b border-slate-100 text-left text-xs font-semibold text-slate-500 uppercase tracking-wider">
                   <th className="px-6 py-4">Student</th>
                   <th className="px-6 py-4">Course</th>
+                  <th className="px-6 py-4">Status</th>
                   <th className="px-6 py-4 text-right">Actions</th>
                 </tr>
               </thead>
@@ -192,14 +211,38 @@ export default function EnrollmentsPage() {
                           </div>
                         </div>
                       </td>
+                      <td className="px-6 py-4">
+                        {e.status === 'PENDING' ? (
+                          <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md text-xs font-bold bg-amber-100 text-amber-700 border border-amber-200">
+                            <AlertCircle className="w-3.5 h-3.5" />
+                            Pending
+                          </span>
+                        ) : (
+                          <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md text-xs font-bold bg-emerald-100 text-emerald-700 border border-emerald-200">
+                            <CheckCircle2 className="w-3.5 h-3.5" />
+                            Active
+                          </span>
+                        )}
+                      </td>
                       <td className="px-6 py-4 text-right">
-                        <button 
-                          onClick={() => handleDelete(e.id)}
-                          className="w-8 h-8 rounded-lg inline-flex items-center justify-center text-slate-400 hover:text-red-600 hover:bg-red-50 transition-colors"
-                          title="Drop Student"
-                        >
-                          <Trash2 className="w-4 h-4" />
-                        </button>
+                        <div className="flex items-center justify-end gap-2">
+                          {e.status === 'PENDING' && (
+                            <button 
+                              onClick={() => handleApprove(e.id)}
+                              className="px-3 py-1.5 rounded-lg inline-flex items-center justify-center text-xs font-bold bg-indigo-50 text-indigo-700 hover:bg-indigo-600 hover:text-white transition-colors"
+                              title="Approve Request"
+                            >
+                              Approve
+                            </button>
+                          )}
+                          <button 
+                            onClick={() => handleDelete(e.id)}
+                            className="w-8 h-8 rounded-lg inline-flex items-center justify-center text-slate-400 hover:text-red-600 hover:bg-red-50 transition-colors"
+                            title="Drop Student"
+                          >
+                            <Trash2 className="w-4 h-4" />
+                          </button>
+                        </div>
                       </td>
                     </tr>
                   ))

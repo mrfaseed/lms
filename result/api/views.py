@@ -166,6 +166,15 @@ class AdminEnrollmentDetailAPIView(APIView):
         enrollment.delete()
         return Response(status=status.HTTP_204_NO_CONTENT)
 
+    def patch(self, request, pk):
+        enrollment = get_object_or_404(TakenCourse, pk=pk)
+        new_status = request.data.get('status')
+        if new_status in ['APPROVED', 'REJECTED', 'PENDING']:
+            enrollment.status = new_status
+            enrollment.save()
+            return Response({"success": True, "message": f"Status updated to {new_status}"})
+        return Response({"error": "Invalid status"}, status=400)
+
 from rest_framework.permissions import IsAuthenticated
 
 class StudentSelfEnrollAPIView(APIView):
@@ -193,11 +202,10 @@ class StudentSelfEnrollAPIView(APIView):
             return Response({"error": "You are already enrolled in this course."}, status=status.HTTP_400_BAD_REQUEST)
             
         if course.enrollment_strategy == 'OPEN':
-            enrollment = TakenCourse.objects.create(student=student, course=course)
+            enrollment = TakenCourse.objects.create(student=student, course=course, status='APPROVED')
             return Response({"success": True, "status": "enrolled", "message": "Successfully enrolled!"}, status=status.HTTP_201_CREATED)
         elif course.enrollment_strategy == 'APPROVAL':
-            # Phase 2: Add to a pending request table. For now, simulate success but inform user
-            # enrollment = CourseEnrollmentRequest.objects.create(...)
+            enrollment = TakenCourse.objects.create(student=student, course=course, status='PENDING')
             return Response({"success": True, "status": "pending", "message": "Enrollment request submitted for approval."}, status=status.HTTP_200_OK)
             
         return Response({"error": "Unknown enrollment strategy"}, status=status.HTTP_400_BAD_REQUEST)
